@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "618354486999",
+    "project_id": "shawl-f6d46",
+    "storage_bucket": "shawl-f6d46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618354486999:android:34bfa4b7c57087f80c0a92",
+        "android_client_info": {
+          "package_name": "com.lm.shawl.prod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618354486999-59q2dud0rqt0484vt0ig95pad109elkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0kxRU4PlpEIEQ1UVmi3T-brvrwfUdjsc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618354486999-59q2dud0rqt0484vt0ig95pad109elkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
