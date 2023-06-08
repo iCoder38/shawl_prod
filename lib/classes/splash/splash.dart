@@ -37,13 +37,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: textWithRegularStyle(
-          'Splash',
-          Colors.white,
-          16.0,
+      // appBar: AppBar(
+      //   title: textWithRegularStyle(
+      //     'Splash',
+      //     Colors.white,
+      //     16.0,
+      //   ),
+      //   backgroundColor: navigationColor,
+      // ),
+      backgroundColor: Color.fromRGBO(
+        230,
+        228,
+        210,
+        1,
+      ),
+      body: Center(
+        child: SizedBox(
+          height: 120,
+          width: 120,
+          child: Image.asset(
+            'assets/images/logo.png',
+          ),
         ),
-        backgroundColor: navigationColor,
       ),
     );
   }
