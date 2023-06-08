@@ -126,14 +126,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             const SizedBox(
               height: 10,
             ),
-            Align(
+            /*Align(
               alignment: Alignment.centerLeft,
               child: textWithBoldStyle(
                 ' Friends',
                 Colors.black,
                 22.0,
               ),
-            ),
+            ),*/
             //
             (strFriendsList == '0')
                 ? const SizedBox(
@@ -185,7 +185,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                                     image:
                                                         const DecorationImage(
                                                       image: AssetImage(
-                                                        'assets/images/avatar.png',
+                                                        'assets/images/logo.png',
                                                       ),
                                                       fit: BoxFit.cover,
                                                     ),
@@ -362,7 +362,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                       ),
                                       image: const DecorationImage(
                                         image: AssetImage(
-                                          'assets/images/avatar.png',
+                                          'assets/images/logo.png',
                                         ),
                                         fit: BoxFit.cover,
                                       ),
@@ -414,7 +414,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                       ),
                                       image: const DecorationImage(
                                         image: AssetImage(
-                                          'assets/images/avatar.png',
+                                          'assets/images/logo.png',
                                         ),
                                         fit: BoxFit.cover,
                                       ),
@@ -576,7 +576,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       ],
                     ),
                     child: Image.asset(
-                      'assets/images/avatar.png',
+                      'assets/images/logo.png',
                     ),
                   )
                 : (strProfilImageLoader == '1')
@@ -836,36 +836,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   //
   funcCreateGroup() {
     if (kDebugMode) {
-      print('object');
-      print(strFriendsList);
+      print('create group');
+      // print(strFriendsList);
     }
     //
-    if (strFriendsList == '0') {
-      //
-      print('=====> SHOW ERROR ALERT <======');
-      /*
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        text: 'Please select atleast one friend'.toString(),
-      );
-      //
-    } else if (contEmail.text == '') {
-      //
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        text: 'Please enter group name'.toString(),
-      );*/
-      //
-    } else {
-      if (kDebugMode) {
-        print('object 1');
-      }
-      //
-      funcCreateGroupChatInXMPP();
-      //
-    }
+    showCustomDialog(context, 'please wait...');
+    funcCreateGroupChatInXMPP();
     //
   }
 
@@ -881,16 +857,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     //
     arrMatch.add(FirebaseAuth.instance.currentUser!.uid);
     //
-    for (int i = 0; i < arrFriends.length; i++) {
-      if (arrFriends[i]['status'] == 'yes') {
-        arrMatch.add(arrFriends[i]['friendFirebaseId'].toString());
-      }
-    }
-    if (kDebugMode) {
-      print(arrMatch);
-    }
+
     CollectionReference users = FirebaseFirestore.instance.collection(
-      '${strFirebaseMode}dialog/India/details',
+      '${strFirebaseMode}groups/India/details',
     );
 
     users
@@ -906,11 +875,31 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           },
         )
         .then(
-          (value) => funcSetMembersInGroup(value.id),
+          (value) => funcSuccesssfullyCreate(),
         )
         .catchError(
           (error) => print("Failed to add user: $error"),
         );
+  }
+
+  //
+  funcSuccesssfullyCreate() {
+    //
+    Navigator.pop(context);
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: navigationColor,
+        content: textWithBoldStyle(
+          //
+          'Successfully Created'.toString(),
+          //
+          Colors.white,
+          14.0,
+        ),
+      ),
+    );
+    //
   }
 
   //

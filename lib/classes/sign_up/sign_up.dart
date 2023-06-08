@@ -334,9 +334,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               //
+              const SizedBox(
+                height: 20,
+              ),
+              //
               SizedBox(
                 height: 60,
-                width: MediaQuery.of(context).size.width,
+                width: 180,
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: NeoPopButton(
@@ -354,10 +358,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        textWithBoldStyle(
-                          'Sign In',
-                          Colors.black,
-                          14.0,
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.arrow_back,
+                              size: 20.0,
+                            ),
+                            textWithBoldStyle(
+                              'Sign In',
+                              Colors.black,
+                              14.0,
+                            ),
+                          ],
                         ),
                       ],
                     ),

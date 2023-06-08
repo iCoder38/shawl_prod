@@ -83,7 +83,9 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
                 ),
                 onTapUp: () {
                   //
-                  Navigator.pop(context);
+                  popupExitPublicGroup(context, 'Exit public chat ?');
+                  // Navigator.pop(context);
+                  //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
                 child: const Row(

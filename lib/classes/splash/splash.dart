@@ -125,9 +125,9 @@ class _SplashScreenState extends State<SplashScreen> {
         if (t.tick == 2) {
           t.cancel();
           // func_push_to_next_screen();
-          if (kDebugMode) {
-            print('object');
-          }
+          // if (kDebugMode) {
+          //   print('object');
+          // }
           //
           if (FirebaseAuth.instance.currentUser != null) {
             // signed in

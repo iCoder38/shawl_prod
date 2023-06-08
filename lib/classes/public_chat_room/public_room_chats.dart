@@ -245,52 +245,65 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
           alignment: Alignment.bottomLeft,
           child: Row(
             children: [
-              textWithSemiBoldStyle(
-                //
-                getSnapshotData[index]['sender_name'].toString(),
-                //
-                16.0,
-                Colors.black,
-                // 'right',
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(right: 80),
+                  // width: MediaQuery.of(context).size.width,
+                  // color: Colors.amber,
+                  child: GestureDetector(
+                    onTap: () {
+                      //
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PrivateChatScreenTwo(
+                            strSenderName:
+                                widget.strLoginSenderNameForPublic.toString(),
+                            strReceiverName: getSnapshotData[index]
+                                    ['sender_name']
+                                .toString(),
+                            strReceiverFirebaseId: getSnapshotData[index]
+                                    ['sender_firebase_id']
+                                .toString(),
+                            strSenderChatId:
+                                widget.strLoginSenderChatIdForPublic.toString(),
+                            strReceiverChatId: getSnapshotData[index]
+                                    ['sender_chat_user_id']
+                                .toString(),
+                          ),
+                        ),
+                      );
+                      //
+                    },
+                    child: textWithSemiBoldStyle(
+                      //
+                      getSnapshotData[index]['sender_name'].toString(),
+                      //
+                      16.0,
+                      Colors.black,
+                      // 'right',
+                    ),
+                  ),
+                ),
               ),
               //
-              (getSnapshotData[index]['sender_firebase_id'].toString() ==
-                      FirebaseAuth.instance.currentUser!.uid)
-                  ? const SizedBox()
-                  : IconButton(
-                      onPressed: () {
-                        if (kDebugMode) {
-                          print('=====> CHAT WITH OTHERS CLICK <=====');
-                        }
-                        //
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PrivateChatScreenTwo(
-                              strSenderName:
-                                  widget.strLoginSenderNameForPublic.toString(),
-                              strReceiverName: getSnapshotData[index]
-                                      ['sender_name']
-                                  .toString(),
-                              strReceiverFirebaseId: getSnapshotData[index]
-                                      ['sender_firebase_id']
-                                  .toString(),
-                              strSenderChatId: widget
-                                  .strLoginSenderChatIdForPublic
-                                  .toString(),
-                              strReceiverChatId: getSnapshotData[index]
-                                      ['sender_chat_user_id']
-                                  .toString(),
-                            ),
-                          ),
-                        );
-                        //
-                      },
-                      icon: const Icon(
-                        Icons.chat,
-                        color: Colors.purple,
-                      ),
-                    ),
+              // (getSnapshotData[index]['sender_firebase_id'].toString() ==
+              //         FirebaseAuth.instance.currentUser!.uid)
+              //     ? const SizedBox()
+              //     : IconButton(
+              //         onPressed: () {
+              //           if (kDebugMode) {
+              //             print('=====> CHAT WITH OTHERS CLICK <=====');
+              //           }
+              //           //
+
+              //           //
+              //         },
+              //         icon: const Icon(
+              //           Icons.chat,
+              //           color: Colors.purple,
+              //         ),
+              //       ),
             ],
             // 98061311374
             // 8800631774

@@ -320,3 +320,82 @@ void popUpWithOutsideClick(BuildContext context, String message) async {
     },
   );
 }
+
+// EXIT PUBLIC GROUP
+void popupExitPublicGroup(BuildContext context, String message) async {
+  await showDialog(
+    barrierDismissible: true,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: textWithRegularStyle(
+                    //
+                    message,
+                    //
+                    Colors.black,
+                    14.0,
+                  ),
+                ),
+              ),
+              //
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        //
+                        Navigator.pop(context);
+                        //
+                      },
+                      child: textWithBoldStyle(
+                        'dismiss',
+                        Colors.black,
+                        14.0,
+                      ),
+                    ),
+                  ),
+
+                  //
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  //
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        //
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        //
+                      },
+                      child: textWithBoldStyle(
+                        'yes, exit',
+                        Colors.redAccent,
+                        14.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}

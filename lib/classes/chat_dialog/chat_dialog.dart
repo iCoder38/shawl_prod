@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:shawl_prod/classes/create_group/create_group.dart';
 import 'package:shawl_prod/classes/set_profile_for_public/set_profile_for_public.dart';
+import 'package:shawl_prod/group_chat/group_chat.dart';
 // import 'package:water_ship/classes/add_members/add_members.dart';
 // import 'package:water_ship/classes/create_group/create_group.dart';
 
@@ -19,8 +20,6 @@ import '../Utils/utils.dart';
 class DialogScreen extends StatefulWidget {
   const DialogScreen({
     super.key,
-    // required this.str_dialog_login_user_chat_id,
-    //required this.str_dialog_login_user_gender
   });
 
   @override
@@ -31,58 +30,13 @@ class _DialogScreenState extends State<DialogScreen> {
   //
   FirebaseAuth firebase_auth = FirebaseAuth.instance;
   //
-  // var str_user_id;
+
   @override
   void initState() {
     //
-    // func();
+
     //
     super.initState();
-  }
-
-  func() {
-    // var plainText = FirebaseAuth.instance.currentUser!.displayName.toString();
-    // final key = encrypt.Key.fromUtf8('my 32 length key................');
-    // final iv = encrypt.IV.fromLength(16);
-    // // final encrypted = encrypt.Encrypter(AES(key));
-    // final encrypter = Encrypter(AES(key));
-    // //
-    // final encrypted = encrypter.encrypt(plainText, iv: iv);
-    // final decrypted = encrypter.decrypt(encrypted, iv: iv);
-    // if (kDebugMode) {
-    //   // final encrypted = encrypter.encrypt(plainText, iv: iv);
-
-    //   print('TEXT');
-    //   print(FirebaseAuth.instance.currentUser!.displayName.toString());
-    //   print('ENCRPT');
-    //   print(decrypted);
-    //   // print(encrypted.base64);
-    // }
-
-// 2
-    // final plainText = FirebaseAuth.instance.currentUser!.displayName.toString();
-
-    // final key = encrypt.Key.fromSecureRandom(32);
-    // final iv = IV.fromSecureRandom(16);
-    // final encrypter = Encrypter(AES(key));
-
-    // final encrypted = encrypter.encrypt(plainText, iv: iv);
-    // final decrypted = encrypter.decrypt(encrypted, iv: iv);
-
-    // print(decrypted);
-    // print(encrypted.bytes);
-    // print(encrypted.base16);
-    // print(encrypted.base64);
-
-    // 3
-
-    // final key = encrypt.Key.fromUtf8('my 32 length key................');
-    // final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-    // // final initVector = IV.fromUtf8(16.substring(0, 16));
-    // final iv = IV.fromSecureRandom(16);
-    // final encrypted = encrypter.encrypt('epyN4i7PlvR1PcZGqnSEvg==', iv: iv);
-    // final decrypted = encrypter.decrypt(encrypted, iv: iv);
-    // print(decrypted);
   }
 
   @override
@@ -120,9 +74,9 @@ class _DialogScreenState extends State<DialogScreen> {
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(
                       Icons.logout,
                       color: Colors.redAccent,
@@ -142,6 +96,8 @@ class _DialogScreenState extends State<DialogScreen> {
             //
             addMemberAndCreateGroupUI(context),
             //
+
+            //
             Container(
               margin: const EdgeInsets.only(top: 64.0),
               color: Colors.black,
@@ -149,95 +105,103 @@ class _DialogScreenState extends State<DialogScreen> {
               height: 0.4,
               // child: widget
             ),
-            Center(
-              child: textWithRegularStyle(
-                'str',
-                Colors.black,
-                20.0,
-              ),
+            //
+            const SizedBox(
+              height: 120,
             ),
+            groupsListingUI(),
+            //
           ],
-        ), /*StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('${strFirebaseMode}user')
-              .doc('India')
-              .collection('details')
-              .orderBy('time_stamp', descending: true)
-              .where('match', arrayContainsAny: [
-            //
-            FirebaseAuth.instance.currentUser!.uid,
-            //
-          ]).snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData) {
-              if (kDebugMode) {
-                print(snapshot.data!.docs.length);
-              }
-
-              var save_snapshot_value = snapshot.data!.docs;
-              if (kDebugMode) {
-                print(save_snapshot_value);
-              }
-              return (snapshot.data!.docs.isEmpty)
-                  ? Center(
-                      child: textWithRegularStyle(
-                        'No chat found',
-                        Colors.black,
-                        14.0,
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(top: 14.0),
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => const Divider(
-                          color: Colors.grey,
-                        ),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              //
-                              if (kDebugMode) {
-                                print(snapshot.data!.docs[index]['chat_type']
-                                    .toString());
-                              }
-                              //
-                              if (snapshot.data!.docs[index]['chat_type']
-                                      .toString() ==
-                                  'group') {
-                                //
-                                func_push_to_group_chat(
-                                    snapshot.data!.docs[index].data());
-                                //
-                              } else {
-                                func_push_to_private_chat(
-                                    snapshot.data!.docs[index].data());
-                              }
-                            },
-                            child: (snapshot.data!.docs[index]['chat_type']
-                                        .toString() ==
-                                    'group')
-                                ? groupChatUI(snapshot, index)
-                                : privateChatUI(snapshot, index),
-                          );
-                        },
-                      ),
-                    );
-            } else if (snapshot.hasError) {
-              if (kDebugMode) {
-                print(snapshot.error);
-              }
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),*/
+        ), /**/
       ),
+    );
+  }
+
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> groupsListingUI() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('${strFirebaseMode}groups')
+          .doc('India')
+          .collection('details')
+          .orderBy('time_stamp', descending: true)
+          .where('match', arrayContainsAny: [
+        //
+        FirebaseAuth.instance.currentUser!.uid,
+        //
+      ]).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
+          if (kDebugMode) {
+            print(snapshot.data!.docs.length);
+          }
+
+          var save_snapshot_value = snapshot.data!.docs;
+          if (kDebugMode) {
+            print(save_snapshot_value);
+          }
+          return (snapshot.data!.docs.isEmpty)
+              ? Center(
+                  child: textWithRegularStyle(
+                    'No chat found',
+                    Colors.black,
+                    14.0,
+                  ),
+                )
+              : Container(
+                  color: Colors.transparent,
+                  margin: const EdgeInsets.only(
+                    top: 60,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 14.0),
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const Divider(
+                        color: Colors.grey,
+                      ),
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          onTap: () {
+                            //
+                            if (kDebugMode) {
+                              print(snapshot.data!.docs[index]['chat_type']
+                                  .toString());
+                            }
+                            //
+                            if (snapshot.data!.docs[index]['chat_type']
+                                    .toString() ==
+                                'group') {
+                              //
+                              func_push_to_group_chat(
+                                  snapshot.data!.docs[index].data());
+                              //
+                            } else {
+                              func_push_to_private_chat(
+                                  snapshot.data!.docs[index].data());
+                            }
+                          },
+                          child: (snapshot.data!.docs[index]['chat_type']
+                                      .toString() ==
+                                  'group')
+                              ? groupChatUI(snapshot, index)
+                              : privateChatUI(snapshot, index),
+                        );
+                      },
+                    ),
+                  ),
+                );
+        } else if (snapshot.hasError) {
+          if (kDebugMode) {
+            print(snapshot.error);
+          }
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 
@@ -367,10 +331,14 @@ class _DialogScreenState extends State<DialogScreen> {
               width: 54,
               decoration: const BoxDecoration(
                 color: Colors.transparent,
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/icons/group.png',
-                  ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  40,
+                ),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             )
@@ -484,7 +452,7 @@ class _DialogScreenState extends State<DialogScreen> {
                         color: Colors.transparent,
                         image: DecorationImage(
                           image: AssetImage(
-                            'assets/icons/avatar.png',
+                            'assets/images/logo.JPG',
                           ),
                         ),
                       ),
@@ -576,13 +544,13 @@ class _DialogScreenState extends State<DialogScreen> {
       print(dict_dialog_data);
     }
 
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => GroupChatScreen(
-    //       chatDialogData: dict_dialog_data,
-    //     ),
-    //   ),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GroupChatScreen(
+          chatDialogData: dict_dialog_data,
+        ),
+      ),
+    );
   }
 }
