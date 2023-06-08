@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shawl_prod/classes/private_chat/private_chat_room_two.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../Utils/utils.dart';
@@ -194,7 +195,15 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                               top: 10,
                               bottom: 10,
                             ),
-                            child: Align(
+                            child: (getSnapShopValue[index]
+                                            ['sender_firebase_id']
+                                        .toString() ==
+                                    FirebaseAuth.instance.currentUser!.uid)
+                                ? rightSideUIOnlyForPublicChat(
+                                    getSnapShopValue, index)
+                                : leftSideUIOnlyForPublicChat(
+                                    getSnapShopValue, index),
+                            /*Align(
                               alignment: (getSnapShopValue[index]
                                               ['sender_firebase_id']
                                           .toString() ==
@@ -208,7 +217,7 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                               //         FirebaseAuth.instance.currentUser!.uid)
                               //     ? senderUI(getSnapShopValue, index)
                               //     : receiverUI(index),
-                            ),
+                            ),*/
                           ),
                         );
                       },
@@ -254,27 +263,27 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                           print('=====> CHAT WITH OTHERS CLICK <=====');
                         }
                         //
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => PrivateChatScreenTwo(
-                        //       strSenderName:
-                        //           widget.strLoginSenderNameForPublic.toString(),
-                        //       strReceiverName: getSnapshotData[index]
-                        //               ['sender_name']
-                        //           .toString(),
-                        //       strReceiverFirebaseId: getSnapshotData[index]
-                        //               ['sender_firebase_id']
-                        //           .toString(),
-                        //       strSenderChatId: widget
-                        //           .strLoginSenderChatIdForPublic
-                        //           .toString(),
-                        //       strReceiverChatId: getSnapshotData[index]
-                        //               ['sender_chat_user_id']
-                        //           .toString(),
-                        //     ),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrivateChatScreenTwo(
+                              strSenderName:
+                                  widget.strLoginSenderNameForPublic.toString(),
+                              strReceiverName: getSnapshotData[index]
+                                      ['sender_name']
+                                  .toString(),
+                              strReceiverFirebaseId: getSnapshotData[index]
+                                      ['sender_firebase_id']
+                                  .toString(),
+                              strSenderChatId: widget
+                                  .strLoginSenderChatIdForPublic
+                                  .toString(),
+                              strReceiverChatId: getSnapshotData[index]
+                                      ['sender_chat_user_id']
+                                  .toString(),
+                            ),
+                          ),
+                        );
                         //
                       },
                       icon: const Icon(
@@ -294,8 +303,8 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
             margin: const EdgeInsets.only(
               right: 40,
             ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(
                   16,
                 ),
@@ -309,14 +318,20 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                   16,
                 ),
               ),
-              color: Colors.grey.shade200,
+              // color: Colors.grey.shade200,
+              color: Color.fromRGBO(
+                172,
+                166,
+                204,
+                1,
+              ),
             ),
             padding: const EdgeInsets.all(16),
             child: textWithRegularStyleLeft(
               //
               getSnapshotData[index]['message'].toString(),
               //
-              16.0,
+              18.0,
               Colors.black,
               'left',
             ),
@@ -340,4 +355,88 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
       ],
     );
   }
+
+  //
+  Column rightSideUIOnlyForPublicChat(getSnapshotData, int index) {
+    return Column(
+      children: [
+        //
+        /*Align(
+          alignment: Alignment.bottomRight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              textWithSemiBoldStyle(
+                //
+                getSnapshotData[index]['sender_name'].toString(),
+                //
+                16.0,
+                Colors.black,
+                // 'right',
+              ),
+              //
+            ],
+            // 98061311374
+            // 8800631774
+          ),
+        ),*/
+        //
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            margin: const EdgeInsets.only(
+              left: 40,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(
+                  16,
+                ),
+                bottomLeft: Radius.circular(
+                  0,
+                ),
+                topRight: Radius.circular(
+                  16,
+                ),
+                bottomRight: Radius.circular(
+                  16,
+                ),
+              ),
+              // color: Color.fromARGB(255, 103, 167, 236),
+              color: navigationColor,
+            ),
+            padding: const EdgeInsets.all(16),
+            child: textWithRegularStyleLeft(
+              //
+              getSnapshotData[index]['message'].toString(),
+              //
+              16.0,
+              Colors.black,
+              'right',
+            ),
+          ),
+        ),
+        //
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            color: Colors.transparent,
+            child: textWithRegularStyleLeft(
+              //
+              funcConvertTimeStampToDateAndTime(
+                getSnapshotData[index]['time_stamp'],
+              ),
+              //
+              12.0,
+              Colors.black,
+              'right',
+            ),
+          ),
+        ),
+        //
+      ],
+    );
+  }
+  //
 }

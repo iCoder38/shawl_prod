@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
+import 'package:shawl_prod/classes/public_chat_dialog/all_chats_list.dart';
 import 'package:shawl_prod/classes/public_chat_room/public_room_chats.dart';
 
 import '../Utils/utils.dart';
@@ -62,36 +63,6 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        // appBar: PreferredSize(
-        //   preferredSize: const Size.fromHeight(40.0),
-        //   child: AppBar(
-        //     // title: textWithSemiBoldStyle('Chat Room', 16.0, Colors.white),
-        //     automaticallyImplyLeading: false,
-        //     bottom: TabBar(
-        //       padding: const EdgeInsets.all(4.0),
-        //       // controller: _tabController,
-        //       indicatorColor: Colors.purpleAccent,
-        //       isScrollable: false,
-        //       tabs: [
-        //         textWithSemiBoldStyle(
-        //           'Public',
-        //           16.0,
-        //           Colors.white,
-        //         ),
-        //         textWithSemiBoldStyle(
-        //           'My Chats',
-        //           16.0,
-        //           Colors.white,
-        //         ),
-        //       ],
-        //     ),
-        //     // actions: const [
-        //     //   Icon(
-        //     //     Icons.exit_to_app,
-        //     //   ),
-        //     // ],
-        //   ),
-        // ),
         appBar: AppBar(
           title: textWithBoldStyle(
             'Public Room',
@@ -127,6 +98,49 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
               ),
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 50,
+                // width: 50,
+                child: NeoPopButton(
+                  color: navigationColor,
+                  // onTapUp: () => HapticFeedback.vibrate(),
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                  onTapUp: () {
+                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllChatsListScreen(
+                            str_dialog_login_user_chat_id:
+                                widget.strSenderChatId),
+                      ),
+                    );
+                    //
+                  },
+                  onTapDown: () => HapticFeedback.vibrate(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: textWithRegularStyle(
+                          'All Chats',
+                          Colors.black,
+                          14.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
           backgroundColor: navigationColor,
         ),
         body: TabBarView(
@@ -158,10 +172,11 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
 
             // ======> SECOND TAB <======
             // ========================
-            // AllChatsListScreen(
-            //   str_dialog_login_user_chat_id: widget.strSenderChatId,
-            //   // str_dialog_login_user_gender: 'g',
-            // ),
+            // textWithRegularStyle('all chatts', Colors.black, 14.0)
+            AllChatsListScreen(
+              str_dialog_login_user_chat_id: widget.strSenderChatId,
+              // str_dialog_login_user_gender: 'g',
+            ),
             // ========================
             // ========================
           ],
