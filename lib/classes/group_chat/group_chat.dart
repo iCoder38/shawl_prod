@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print
 
 import 'dart:io';
 import 'dart:math';
@@ -13,16 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 
-import '../classes/Utils/utils.dart';
-import '../classes/group_chat/group_chat_details_edit/group_chat_details.dart';
-// import 'package:quickalert/models/quickalert_type.dart';
-// import 'package:quickalert/widgets/quickalert_dialog.dart';
-// import 'package:flutter/src/widgets/framework.dart';
-// import 'package:flutter/src/widgets/placeholder.dart';
-
-// import '../controllers/database/database_helper.dart';
-// import '../header/utils.dart';
-// import 'group_chat_details/group_chat_details.dart';
+import '../Utils/utils.dart';
+import 'group_chat_details_edit/group_chat_details.dart';
 
 class GroupChatScreen extends StatefulWidget {
   const GroupChatScreen({super.key, this.chatDialogData});
@@ -35,7 +27,6 @@ class GroupChatScreen extends StatefulWidget {
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
   //
-  // late DataBase handler;
   //
   var strFriendLoader = '0';
   var strLoginUserName = '';
@@ -68,6 +59,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     //
     strGroupName = widget.chatDialogData['group_name'].toString();
     //
+    // funcCheckMemberIsInGroupXMPP();
+    //
   }
 
   _scrollToEnd() async {
@@ -92,13 +85,12 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                         width: 40,
                         child: GestureDetector(
                           onTap: () {
-                            // print('click 1');
                             //
                             pushToChatDetails(context);
                             //
                           },
                           child: Image.asset(
-                            'assets/icons/avatar.png',
+                            'assets/images/logo.png',
                           ),
                         ),
                       ),
@@ -128,7 +120,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              print('click 1');
+                              print('1.1');
                               //
                               pushToChatDetails(context);
                               //
@@ -233,7 +225,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             separatorBuilder: (context, index) => const Divider(
                               color: Colors.grey,
                             ),
-                            controller: _scrollController,
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (BuildContext context, int index) {
                               return StreamBuilder(
@@ -251,22 +242,19 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         print('=====> YES, DATA');
                                       }
                                       //
-                                      // if (strScrollOnlyOneTime == '1') {
-                                      // if (kDebugMode) {
-                                      // print('=====> YES, DATA 2');
-                                      // }
-                                      _needsScroll = true;
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback(
-                                              (_) => _scrollToEnd());
-                                      // }
+                                      if (strScrollOnlyOneTime == '1') {
+                                        _needsScroll = true;
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback(
+                                                (_) => _scrollToEnd());
+                                      }
                                       //
 
                                       var getSnapShopValue =
                                           snapshot.data!.docs.reversed.toList();
-                                      // if (kDebugMode) {
-                                      // print(getSnapShopValue);
-                                      // }
+                                      if (kDebugMode) {
+                                        // print(getSnapShopValue);
+                                      }
                                       return Stack(
                                         children: [
                                           if (strScrollOnlyOneTime == '1') ...[
@@ -278,16 +266,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                               alignment: Alignment.topCenter,
                                               child: InkWell(
                                                 onTap: () {
-                                                  // _needsScroll = true;
-                                                  // WidgetsBinding.instance
-                                                  //     .addPostFrameCallback(
-                                                  //         (_) =>
-                                                  //             _scrollToEnd());
+                                                  _needsScroll = true;
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) =>
+                                                              _scrollToEnd());
                                                 },
                                                 child: Container(
                                                   margin: const EdgeInsets.all(
-                                                    10.0,
-                                                  ),
+                                                      10.0),
                                                   width: 120,
                                                   height: 40,
                                                   child: Center(
@@ -326,13 +313,12 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                             ),
                                           ],
                                           ListView.builder(
-                                            // controller: _scrollController,
+                                            // controller: controller,
+                                            controller: _scrollController,
                                             itemCount: getSnapShopValue.length,
                                             shrinkWrap: true,
                                             padding: const EdgeInsets.only(
-                                              top: 10,
-                                              bottom: 10,
-                                            ),
+                                                top: 10, bottom: 10),
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             itemBuilder: (context, index) {
@@ -374,11 +360,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                         ],
                                       );
                                     } else if (snapshot.hasError) {
-                                      //
+                                      // return Center(
+                                      //   child: Text(
+                                      //     'Error: ${snapshot.error}',
+                                      //   ),
+
+                                      // );
                                       if (kDebugMode) {
                                         print(snapshot.error);
                                       }
-                                      //
                                     }
                                     return const Center(
                                       child: CircularProgressIndicator(),
@@ -400,6 +390,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 );
               },
             ),
+
+            /**/
           ),
           //
           // ======> SEND MESSAGE UI <======
@@ -611,9 +603,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(
                       Icons.attachment,
                       color: Colors.white,
@@ -662,9 +654,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(
                       Icons.send,
                       color: Colors.white,
@@ -713,7 +705,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
             'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
             'message': strLastMessageEntered.toString(),
             'time_stamp': DateTime.now().millisecondsSinceEpoch,
-            'room': 'group',
+            'room': 'private',
             'type': 'text_message',
             'chat_members': ''
           },
@@ -772,6 +764,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               {
                 for (var element in value.docs)
                   {
+                    // if (kDebugMode)
+                    //   {
+                    //     print(element.id),
+                    //     print(element.id.runtimeType),
+                    //   }
                     // EDIT USER IF IT ALREADY EXIST
                     funcEditDialog(element.id)
                     //
@@ -832,7 +829,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 //
               }
             },
-            child: textWithRegularStyle('Open Camera', Colors.black, 14.0),
+            child: Text(
+              'Open Camera',
+              // style: TextStyle(
+              // fontFamily: font_family_name,
+              // fontSize: 18.0,
+              // ),
+            ),
           ),
           CupertinoActionSheetAction(
             onPressed: () async {
@@ -855,14 +858,26 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 uploadImageToFirebase(context);
               }
             },
-            child: textWithRegularStyle('Open Gallery', Colors.black, 14.0),
+            child: Text(
+              'Open Gallery',
+              // style: TextStyle(
+              // fontFamily: font_family_name,
+              // fontSize: 18.0,
+              // ),
+            ),
           ),
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
             },
-            child: textWithRegularStyle('Dismiss', Colors.black, 14.0),
+            child: Text(
+              'Dismiss',
+              // style: TextStyle(
+              //   fontFamily: font_family_name,
+              //   fontSize: 18.0,
+              // ),
+            ),
           ),
         ],
       ),
@@ -949,13 +964,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
     if (!mounted) return;
     //
-    // if (result == 'from_email_setting') {
+
     print(result);
     setState(() {
       strGroupName = result;
     });
-    // funcGetLocalDBdata();
-    // }
   }
 
   //
@@ -1005,13 +1018,5 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     // );
   }
 
-  funcRemoved() {
-    // Navigator.pop(context);
-    /*QuickAlert.show(
-      context: context,
-      type: QuickAlertType.error,
-      text: 'message'.toString(),
-    );*/
-    //
-  }
+  funcRemoved() {}
 }

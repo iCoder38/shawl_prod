@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:shawl_prod/classes/create_group/create_group.dart';
+import 'package:shawl_prod/classes/search_add_member/add_members.dart';
 import 'package:shawl_prod/classes/set_profile_for_public/set_profile_for_public.dart';
 import 'package:shawl_prod/group_chat/group_chat.dart';
 // import 'package:water_ship/classes/add_members/add_members.dart';
@@ -86,6 +87,45 @@ class _DialogScreenState extends State<DialogScreen> {
               ),
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: SizedBox(
+                height: 44,
+                width: 44,
+                child: NeoPopButton(
+                  color: navigationColor,
+                  // onTapUp: () => HapticFeedback.vibrate(),
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                  onTapUp: () {
+                    //
+                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddMembersScreen(),
+                      ),
+                    );
+                    //
+                  },
+                  onTapDown: () => HapticFeedback.vibrate(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Icon(
+                          Icons.search,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         // drawer: SizedBox(
         //   width: MediaQuery.of(context).size.width,
@@ -249,7 +289,7 @@ class _DialogScreenState extends State<DialogScreen> {
             children: [
               Center(
                 child: textWithRegularStyle(
-                  'create group',
+                  'Create Group',
                   Colors.black,
                   14.0,
                 ),

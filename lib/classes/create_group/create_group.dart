@@ -871,20 +871,56 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             'chat_type': 'group',
             'last_message': '',
             'time_stamp': DateTime.now().millisecondsSinceEpoch,
+            'total_members': '20',
             'match': arrMatch,
+            'members_details': [
+              {
+                'member_active': 'yes',
+                'member_type': 'admin',
+                'member_name': FirebaseAuth.instance.currentUser!.displayName,
+                'member_firebase_id': FirebaseAuth.instance.currentUser!.uid,
+              },
+            ],
           },
         )
         .then(
-          (value) => funcSuccesssfullyCreate(),
+          (value) => funcUpdateFirestoreIdInGroup(
+            groupIdCreate.toString(),
+            value.id,
+          ),
         )
         .catchError(
           (error) => print("Failed to add user: $error"),
         );
   }
 
-  //
-  funcSuccesssfullyCreate() {
+  // UPDATE FIRESTORE ID IN GROUP
+  funcUpdateFirestoreIdInGroup(get_group_id, firestore_id) {
+    FirebaseFirestore.instance
+        .collection("${strFirebaseMode}groups")
+        .doc('India')
+        .collection('details')
+        .doc(firestore_id)
+        .set(
+      {
+        'firestore_id': firestore_id,
+      },
+      SetOptions(merge: true),
+    ).then(
+      (value1) {
+        //
+        funcSuccesssfullyCreate(
+          get_group_id.toString(),
+        );
+        //
+      },
+    );
+  }
+
+  // SUCCESSFULLY CREATED A GROUP
+  funcSuccesssfullyCreate(get_group_id) {
     //
+
     Navigator.pop(context);
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -902,69 +938,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     //
   }
 
-  //
-  funcSetMembersInGroup(groupId) {
-    if (kDebugMode) {
-      print('================================');
-      print(arrFriends);
-      print('================================');
-      print(arrFriends.length);
-      print('================================');
-      // print(arrSearchFriend);
-      print('================================');
-    }
-
-    var arrMatch = [];
-
-    var custom = {
-      'evs_id': strLoginUserId.toString(),
-      'name': strLoginUserName.toString(),
-      'firebase_id': FirebaseAuth.instance.currentUser!.uid,
-      'profile_picture': strloginUserImage.toString(),
-      'type': 'Admin',
-      'active': 'yes'
-    };
-    arrMatch.add(custom);
-
-    // for (int i = 0; i < arrFriends.length; i++) {
-    //   if (arrFriends[i]['status'] == 'yes') {
-    //     //
-
-    //     //
-    //     arrMatch.add(custom);
-    //     //
-
-    //   }
-    // }
-    FirebaseFirestore.instance
-        .collection("${strFirebaseMode}dialog")
-        .doc('India')
-        .collection('details')
-        .doc(groupId)
-        .set(
-      {
-        'members_details': arrMatch,
-      },
-      SetOptions(merge: true),
-    ).then(
-      (value1) {
-        //
-
-        //
-      },
-    );
-    //
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    //
-    const snackBar = SnackBar(
-      backgroundColor: Colors.green,
-      content: Text('Created....'),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    Navigator.pop(context);
-  }
-
-  //
   // upload image via firebase
   Future uploadImageToFirebase(BuildContext context) async {
     if (kDebugMode) {
