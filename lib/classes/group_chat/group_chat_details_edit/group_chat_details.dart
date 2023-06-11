@@ -416,7 +416,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                           ],
                         ),
                         child: Image.asset(
-                          'assets/icons/avatar.png',
+                          'assets/images/logo.png',
                         ),
                       )
                     : Container(
@@ -555,7 +555,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                     }
 
                     // dismiss keyboard
-                    FocusScope.of(context).requestFocus(FocusNode());
+                    // FocusScope.of(context).requestFocus(FocusNode());
                     //
 
                     funcGetDataXMPP();
@@ -670,7 +670,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
   funcGetDataXMPP() {
     if (kDebugMode) {
       print('=============== GROUP ID IS ======================');
-      print(widget.dictGetDataForDetails['group_id'].toString());
+      // print(widget.dictGetDataForDetails['group_id'].toString());
       print('====================================================');
     }
 

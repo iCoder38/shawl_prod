@@ -654,9 +654,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 ),
                 onTapUp: () {
                   //
-                  (strDisableTextField == '0')
-                      ? contTextSendMessage.text = ''
-                      : sendMessageViaFirebase(contTextSendMessage.text);
+                  (contTextSendMessage.text == '')
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : (strDisableTextField == '0')
+                          ? contTextSendMessage.text = ''
+                          : sendMessageViaFirebase(contTextSendMessage.text);
                   lastMessage = contTextSendMessage.text.toString();
                   contTextSendMessage.text = '';
                   //
@@ -956,53 +960,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     });
     // funcGetLocalDBdata();
     // }
-  }
-
-  //
-  funcCheckMemberIsInGroupXMPP() {
-    print('DISHANT');
-    StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('${strFirebaseMode}groups')
-            .doc('India')
-            .collection('details')
-            .orderBy('time_stamp', descending: true)
-            .where('match', arrayContainsAny: [
-          //
-          FirebaseAuth.instance.currentUser!.uid,
-          //
-        ]).snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-            if (kDebugMode) {
-              print('=============== DIALOG DATA IN CHAT ==============');
-              print(snapshot.data!.docs.length);
-              print('==================================================');
-            }
-
-            var saveSnapshotValue = snapshot.data!.docs;
-            if (kDebugMode) {
-              print('=============== DIALOG ==============');
-              print(saveSnapshotValue);
-              print('======================================');
-            }
-          } else if (snapshot.hasError) {
-            if (kDebugMode) {
-              print(snapshot.error);
-            }
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-    // QuickAlert.show(
-    //   context: context,
-    //   type: QuickAlertType.error,
-    //   text: 'message'.toString(),
-    // );
   }
 
   funcRemoved() {

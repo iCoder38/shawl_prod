@@ -55,12 +55,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       print(widget.chatDialogData);
       print('*******************************************************');
     }
-    super.initState();
+
     //
+    // print(widget.chatDialogData['group_display_image']);
     strGroupName = widget.chatDialogData['group_name'].toString();
     //
     // funcCheckMemberIsInGroupXMPP();
     //
+    super.initState();
   }
 
   _scrollToEnd() async {
@@ -646,11 +648,16 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 ),
                 onTapUp: () {
                   //
-                  (strDisableTextField == '0')
-                      ? contTextSendMessage.text = ''
-                      : sendMessageViaFirebase(contTextSendMessage.text);
-                  lastMessage = contTextSendMessage.text.toString();
-                  contTextSendMessage.text = '';
+                  print('rajput');
+                  // (contTextSendMessage.text == '')
+                  //     ? SizedBox(
+                  //         height: 0,
+                  //       )
+                  //     : (strDisableTextField == '0')
+                  //         ? contTextSendMessage.text = ''
+                  //         : sendMessageViaFirebase(contTextSendMessage.text);
+                  // lastMessage = contTextSendMessage.text.toString();
+                  // contTextSendMessage.text = '';
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
@@ -692,7 +699,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   //
   // send message
   sendMessageViaFirebase(strLastMessageEntered) {
-    // print(cont_txt_send_message.text);
+    print('ok ok ok ok o ko k');
 
     CollectionReference users = FirebaseFirestore.instance.collection(
       '${strFirebaseMode}message/${widget.chatDialogData['group_id'].toString()}/details',

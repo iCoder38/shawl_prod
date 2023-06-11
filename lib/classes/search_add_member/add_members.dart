@@ -444,7 +444,36 @@ class _AddMembersScreenState extends State<AddMembersScreen> {
           'member_firebase_id': FirebaseAuth.instance.currentUser!.uid,
         }
       ])
-    });
+    }).then((value) => {
+              FirebaseFirestore.instance
+                  .collection("${strFirebaseMode}groups")
+                  .doc('India')
+                  .collection('details')
+                  .doc(strSaveFirestoreId.toString())
+                  .update({
+                "match": FieldValue.arrayUnion(
+                    [FirebaseAuth.instance.currentUser!.uid])
+              }).then((value) => {
+                        print('ALL DONE'),
+                      })
+
+              // Update one field, creating the document if it does not already exist.
+
+// db.collection("cities").doc("BJ").set(data, SetOptions(merge: true));
+
+              // FirebaseFirestore.instance
+              //     .collection("${strFirebaseMode}groups")
+              //     .doc('India')
+              //     .collection('details')
+              //     .doc(strSaveFirestoreId.toString())
+              //     .update({
+              //   "match": FieldValue.arrayUnion([
+              //     {
+              //       'firebase_id': FirebaseAuth.instance.currentUser!.uid,
+              //     }
+              //   ])
+              // }),
+            });
     //
     // funcUpdateMatchAndAddFirebaseUI();
 
@@ -452,24 +481,5 @@ class _AddMembersScreenState extends State<AddMembersScreen> {
   }
 
   //
-  funcUpdateMatchAndAddFirebaseUI() {
-//     const db = _firebaseDatabase.reference();
-// const key1 = db.push().key;
-// const key2 = db.push().key;
-// const values = {};
-// values["user_data/"+key1+"/username"] = "aaa";
-// values["user_history/"+key2+"/username"] = "aaa";
-// db.update(values);
-
-//     FirebaseFirestore.instance
-//         .collection("${strFirebaseMode}groups")
-//         .doc('India')
-//         .collection('details')
-//         .doc(strSaveFirestoreId.toString())
-//         .update({
-//       "match": FieldValue.arrayUnion([
-//         {FirebaseAuth.instance.currentUser!.uid}
-//       ])
-//     });
-  }
+  funcUpdateMatchAndAddFirebaseUI() {}
 }

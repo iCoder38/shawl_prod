@@ -35,7 +35,7 @@ class _DialogScreenState extends State<DialogScreen> {
   @override
   void initState() {
     //
-
+    // funcDummy();
     //
     super.initState();
   }
@@ -172,7 +172,7 @@ class _DialogScreenState extends State<DialogScreen> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           if (kDebugMode) {
-            print(snapshot.data!.docs.length);
+            // print(snapshot.data!.docs[0]['members_details'[0]]);
           }
 
           var save_snapshot_value = snapshot.data!.docs;
@@ -462,7 +462,7 @@ class _DialogScreenState extends State<DialogScreen> {
                         color: Colors.transparent,
                         image: DecorationImage(
                           image: AssetImage(
-                            'assets/icons/avatar.png',
+                            'assets/images/logo.png',
                           ),
                         ),
                       ),
@@ -592,5 +592,37 @@ class _DialogScreenState extends State<DialogScreen> {
         ),
       ),
     );
+  }
+
+  //
+  funcDummy() {
+    FirebaseFirestore.instance
+        .collection('${strFirebaseMode}groups')
+        .doc('India')
+        .collection('details')
+        .where('group_id', isEqualTo: 'qwerty')
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        print('==========> DISHANT RAJPUT');
+        print('==========> DISHANT RAJPUT');
+        print(result);
+        print(result.exists);
+        print(result.id);
+        print(result.data());
+        print('==========> DISHANT RAJPUT');
+        print('==========> DISHANT RAJPUT');
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(result.id)
+            .collection("pets")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            print(result.data());
+          });
+        });
+      });
+    });
   }
 }
