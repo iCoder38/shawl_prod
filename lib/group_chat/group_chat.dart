@@ -98,7 +98,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             //
                           },
                           child: Image.asset(
-                            'assets/icons/avatar.png',
+                            'assets/images/logo.png',
                           ),
                         ),
                       ),

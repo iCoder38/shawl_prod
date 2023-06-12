@@ -228,36 +228,26 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                                   14.0,
                                 ),
                                 trailing: (snapshot.data!.docs[0]
-                                                ['members_details'][i]
-                                            ['member_type'] ==
-                                        'admin')
-                                    ? textWithRegularStyle(
-                                        //
-                                        snapshot.data!.docs[0]
-                                                ['members_details'][i]
-                                            ['member_type'],
-                                        //
-                                        Colors.black,
-                                        14.0,
-                                      )
-                                    : (snapshot.data!.docs[0]['members_details']
-                                                [0]['firebase_id'] ==
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid)
-                                        ? InkWell(
+                                            ['admin_firebase_id'] ==
+                                        FirebaseAuth.instance.currentUser!.uid)
+                                    ? (snapshot.data!.docs[0]['members_details']
+                                                [i]['member_type'] ==
+                                            'admin')
+                                        ? textWithRegularStyle(
+                                            'admin',
+                                            Colors.black,
+                                            14.0,
+                                          )
+                                        : GestureDetector(
                                             onTap: () {
-                                              print(
-                                                  'admin click remove button');
-                                              //
                                               funcGetMemberDetailsxmpp(
                                                   i,
                                                   snapshot
                                                       .data!
                                                       .docs[0]
                                                           ['members_details'][i]
-                                                          ['firebase_id']
+                                                          ['member_firebase_id']
                                                       .toString());
-                                              //
                                             },
                                             child: Container(
                                               height: 30,
@@ -286,9 +276,104 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                                               ),
                                             ),
                                           )
-                                        : const SizedBox(
+                                    : (snapshot.data!.docs[0]['members_details']
+                                                [i]['member_type'] ==
+                                            'admin')
+                                        ? textWithRegularStyle(
+                                            'admin', Colors.black, 14.0)
+                                        : SizedBox(
                                             height: 0,
                                           ),
+
+                                /*(snapshot.data!.docs[0]
+                                                ['members_details'][i]
+                                            ['member_type'] ==
+                                        'admin')
+                                    ? textWithRegularStyle(
+                                        //
+                                        'admin',
+                                        // snapshot.data!.docs[0]
+                                        //         ['members_details'][i]
+                                        //     ['member_type'],
+                                        //
+                                        Colors.black,
+                                        14.0,
+                                      )
+                                    : Container(
+                                        height: 30,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color: Colors.redAccent,
+                                          borderRadius: BorderRadius.circular(
+                                            14.0,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Color(0xffDDDDDD),
+                                              blurRadius: 6.0,
+                                              spreadRadius: 2.0,
+                                              offset: Offset(0.0, 0.0),
+                                            )
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: textWithRegularStyle(
+                                            'Remove',
+                                            Colors.white,
+                                            14.0,
+                                          ),
+                                        ),
+                                      ),*/
+
+                                /*(snapshot.data!.docs[0]['members_details']
+                                                [0]['firebase_id'] ==
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        ? InkWell(
+                                            onTap: () {
+                                              print(
+                                                  'admin click remove button');
+                                              //
+                                              /*funcGetMemberDetailsxmpp(
+                                                  i,
+                                                  snapshot
+                                                      .data!
+                                                      .docs[0]
+                                                          ['members_details'][i]
+                                                          ['firebase_id']
+                                                      .toString());*/
+                                              //
+                                            },
+                                            child: Container(
+                                              height: 30,
+                                              width: 80,
+                                              decoration: BoxDecoration(
+                                                color: Colors.redAccent,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  14.0,
+                                                ),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                    color: Color(0xffDDDDDD),
+                                                    blurRadius: 6.0,
+                                                    spreadRadius: 2.0,
+                                                    offset: Offset(0.0, 0.0),
+                                                  )
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: textWithRegularStyle(
+                                                  'Remove',
+                                                  Colors.black,
+                                                  14.0,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : const SizedBox(
+                                            height: 0,
+                                          ),*/
                               ),
                               //
                               Container(
@@ -960,6 +1045,8 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
     deleteUserFirebaseId,
   ) {
     print(widget.dictGetDataForDetails['match']);
+    print(firestoreId);
+    print(deleteUserFirebaseId);
     //
     var arrRemoveFriendFromMembers = [];
     //
@@ -972,7 +1059,13 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
       }
     }
     //
+    print(arrRemoveFriendFromMembers);
+    //
 
+    // funcDeleteMemberFullDetailsFromThisGroup(
+    //   firestoreId,
+    //   deleteUserFirebaseId,
+    // );
     FirebaseFirestore.instance
         .collection("${strFirebaseMode}groups")
         .doc("India")
@@ -985,10 +1078,10 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
               //
               arrRemoveFriendFromMembers.clear(),
               //
-              // funcDeleteMemberFullDetailsFromThisGroup(
-              //   firestoreId,
-              //   deleteUserFirebaseId,
-              // ),
+              funcDeleteMemberFullDetailsFromThisGroup(
+                firestoreId,
+                deleteUserFirebaseId,
+              ),
               //
             });
   }
@@ -1008,17 +1101,16 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
     // //
     for (int i = 0; i < arrMembersDetails.length; i++) {
       //
-      if (arrMembersDetails[i]['firebase_id'].toString() ==
+      if (arrMembersDetails[i]['member_firebase_id'].toString() ==
           deleteUserFirebaseId.toString()) {
-        print('yes match');
+        print('yes match details of member');
       } else {
         var custom = {
-          'active': arrMembersDetails[i]['active'].toString(),
-          'evs_id': arrMembersDetails[i]['evs_id'].toString(),
-          'firebase_id': arrMembersDetails[i]['firebase_id'].toString(),
-          'name': arrMembersDetails[i]['name'].toString(),
-          'profile_picture': arrMembersDetails[i]['profile_picture'].toString(),
-          'type': arrMembersDetails[i]['type'].toString(),
+          'member_active': arrMembersDetails[i]['member_active'].toString(),
+          'member_firebase_id':
+              arrMembersDetails[i]['member_firebase_id'].toString(),
+          'member_name': arrMembersDetails[i]['member_name'].toString(),
+          'member_type': arrMembersDetails[i]['member_type'].toString(),
         };
         //
         arrRemoveFriendFromMembers.add(custom);
@@ -1026,8 +1118,9 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
       //
     }
     //
-    /*print(arrRemoveFriendFromMembers);
-    print(arrRemoveFriendFromMembers.length);*/
+    print(arrRemoveFriendFromMembers);
+    print(arrRemoveFriendFromMembers.length);
+
     FirebaseFirestore.instance
         .collection("${strFirebaseMode}groups")
         .doc("India")

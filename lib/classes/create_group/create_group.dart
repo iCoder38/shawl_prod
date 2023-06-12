@@ -873,6 +873,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             'time_stamp': DateTime.now().millisecondsSinceEpoch,
             'total_members': '20',
             'match': arrMatch,
+            'admin_firebase_id': FirebaseAuth.instance.currentUser!.uid,
             'members_details': [
               {
                 'member_active': 'yes',
