@@ -34,6 +34,7 @@ var appId = 'bbe938fe04a746fd9019971106fa51ff';
 
 var navigationColor = const Color.fromRGBO(255, 180, 170, 1);
 var appBlueColor = const Color.fromRGBO(57, 49, 157, 1);
+var appDesertColor = Color.fromRGBO(230, 228, 210, 1);
 
 var navigationTitleGetStarted = 'Get Started Now';
 var navigationTitleLogin = 'Login';

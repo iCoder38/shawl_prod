@@ -24,12 +24,14 @@ class GroupChatDetailsScreen extends StatefulWidget {
 
 class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
   //
+  var strRemovedMemberName = '';
   var strFriendLoader = '1';
   var strLoginUserName = '';
   var strLoginUserId = '';
   var strLoginUserFirebaseId = '';
   var strloginUserImage = '';
   var arrSearchFriend = [];
+  // var str
   //
   var strFriendsList = '0';
   //
@@ -120,6 +122,9 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
               ),
         backgroundColor: navigationColor,
       ),
+      //
+      backgroundColor: appDesertColor,
+      //
       body: (strFriendLoader == '0')
           ? Center(
               child: CircularProgressIndicator(
@@ -284,96 +289,6 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                                         : SizedBox(
                                             height: 0,
                                           ),
-
-                                /*(snapshot.data!.docs[0]
-                                                ['members_details'][i]
-                                            ['member_type'] ==
-                                        'admin')
-                                    ? textWithRegularStyle(
-                                        //
-                                        'admin',
-                                        // snapshot.data!.docs[0]
-                                        //         ['members_details'][i]
-                                        //     ['member_type'],
-                                        //
-                                        Colors.black,
-                                        14.0,
-                                      )
-                                    : Container(
-                                        height: 30,
-                                        width: 80,
-                                        decoration: BoxDecoration(
-                                          color: Colors.redAccent,
-                                          borderRadius: BorderRadius.circular(
-                                            14.0,
-                                          ),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Color(0xffDDDDDD),
-                                              blurRadius: 6.0,
-                                              spreadRadius: 2.0,
-                                              offset: Offset(0.0, 0.0),
-                                            )
-                                          ],
-                                        ),
-                                        child: Center(
-                                          child: textWithRegularStyle(
-                                            'Remove',
-                                            Colors.white,
-                                            14.0,
-                                          ),
-                                        ),
-                                      ),*/
-
-                                /*(snapshot.data!.docs[0]['members_details']
-                                                [0]['firebase_id'] ==
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid)
-                                        ? InkWell(
-                                            onTap: () {
-                                              print(
-                                                  'admin click remove button');
-                                              //
-                                              /*funcGetMemberDetailsxmpp(
-                                                  i,
-                                                  snapshot
-                                                      .data!
-                                                      .docs[0]
-                                                          ['members_details'][i]
-                                                          ['firebase_id']
-                                                      .toString());*/
-                                              //
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                color: Colors.redAccent,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  14.0,
-                                                ),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Color(0xffDDDDDD),
-                                                    blurRadius: 6.0,
-                                                    spreadRadius: 2.0,
-                                                    offset: Offset(0.0, 0.0),
-                                                  )
-                                                ],
-                                              ),
-                                              child: Center(
-                                                child: textWithRegularStyle(
-                                                  'Remove',
-                                                  Colors.black,
-                                                  14.0,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : const SizedBox(
-                                            height: 0,
-                                          ),*/
                               ),
                               //
                               Container(
@@ -461,12 +376,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
       // height: 100,
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
-        color: Color.fromRGBO(
-          246,
-          248,
-          253,
-          1,
-        ),
+        color: Colors.transparent,
       ),
       child: Row(
         children: [
@@ -546,7 +456,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                         height: 80,
                         width: 80,
                         decoration: BoxDecoration(
-                          color: Colors.transparent,
+                          color: Colors.amber,
                           borderRadius: BorderRadius.circular(
                             40.0,
                           ),
@@ -1055,6 +965,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
         print('yes match');
       } else {
         print('no match');
+        // strRemovedMemberName = arrMembers[i]['member_name'].toString();
         arrRemoveFriendFromMembers.add(arrMembers[i]);
       }
     }
@@ -1200,6 +1111,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
               .doc(element.id)
               .delete()
               .then((value) => {
+                    // funcRemoveUserMessage(),
                     Navigator.pop(context),
                     Navigator.pop(context),
                   });
@@ -1207,6 +1119,33 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
         }
       }
     });
+  }
+
+  //
+  funcRemoveUserMessage() {
+    // print(cont_txt_send_message.text);
+
+    CollectionReference users = FirebaseFirestore.instance.collection(
+      '${strFirebaseMode}message/${widget.dictGetDataForDetails['group_id'].toString()}/details',
+    );
+
+    users
+        .add(
+          {
+            'type': 'remove_user',
+            'admin_name': FirebaseAuth.instance.currentUser!.displayName,
+            'removed_user_name': strRemovedMemberName
+          },
+        )
+        .then((value) =>
+                //
+                print(value)
+            // funcEditMessageAndInsertFirestoreId(value.id),
+            //
+            )
+        .catchError(
+          (error) => print("Failed to add user: $error"),
+        );
   }
 
   //

@@ -428,6 +428,10 @@ class _AddMembersScreenState extends State<AddMembersScreen> {
 
   // GET LOGIN USER DETAILS
   funcAddUserInMyFriendsListXMPP() {
+    //
+    FocusScope.of(context).requestFocus(FocusNode());
+    showCustomDialog(context, 'please wait...');
+    //
     print('USER PRESSED ADD');
     //
     FirebaseFirestore.instance
@@ -455,6 +459,10 @@ class _AddMembersScreenState extends State<AddMembersScreen> {
                     [FirebaseAuth.instance.currentUser!.uid])
               }).then((value) => {
                         print('ALL DONE'),
+                        //
+                        Navigator.pop(context),
+                        Navigator.pop(context),
+                        //
                       })
 
               // Update one field, creating the document if it does not already exist.

@@ -37,13 +37,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   //
   // late DataBase handler;
   //
+  var strImageLoader = '0';
   var strFriendLoader = '0';
   var strLoginUserName = '';
   var strLoginUserId = '';
   var strLoginUserFirebaseId = '';
   var strloginUserImage = '';
   //
-  var strScrollOnlyOneTime = '1';
+  var strScrollOnlyOneTime = '0';
   var lastMessage = '';
   //
   File? imageFile;
@@ -159,7 +160,32 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           ],
         ),
         backgroundColor: navigationColor,
+        actions: [
+          (strImageLoader == '0')
+              ? SizedBox(
+                  height: 0,
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 80,
+                        color: Colors.amber,
+                        child: LinearProgressIndicator(),
+                      ),
+                      //
+                      textWithRegularStyle('processing...', Colors.black, 12.0)
+                    ],
+                  ),
+                )
+        ],
       ),
+      //
+      backgroundColor: appDesertColor,
+      //
       body: Stack(
         children: [
           Container(
@@ -269,62 +295,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                       // }
                                       return Stack(
                                         children: [
-                                          if (strScrollOnlyOneTime == '1') ...[
-                                            const SizedBox(
-                                              height: 0,
-                                            )
-                                          ] else ...[
-                                            Align(
-                                              alignment: Alignment.topCenter,
-                                              child: InkWell(
-                                                onTap: () {
-                                                  // _needsScroll = true;
-                                                  // WidgetsBinding.instance
-                                                  //     .addPostFrameCallback(
-                                                  //         (_) =>
-                                                  //             _scrollToEnd());
-                                                },
-                                                child: Container(
-                                                  margin: const EdgeInsets.all(
-                                                    10.0,
-                                                  ),
-                                                  width: 120,
-                                                  height: 40,
-                                                  child: Center(
-                                                    child: textWithRegularStyle(
-                                                      'str',
-                                                      Colors.black,
-                                                      14.0,
-                                                    ),
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color.fromARGB(
-                                                      255,
-                                                      250,
-                                                      247,
-                                                      247,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      14.0,
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                        spreadRadius: 5,
-                                                        blurRadius: 7,
-                                                        offset: const Offset(
-                                                          0,
-                                                          3,
-                                                        ), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                          // if (strImageLoader == '1') ...[
+                                          //   SizedBox(
+                                          //     height: 0,
+                                          //   )
+                                          // ] else ...[
+                                          //   imageProcessingLoaderUI(),
+                                          // ],
                                           ListView.builder(
                                             // controller: _scrollController,
                                             itemCount: getSnapShopValue.length,
@@ -336,7 +313,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             itemBuilder: (context, index) {
-                                              return Container(
+                                              return
+                                                  // (strImageLoader == '0')
+                                                  //     ? imageProcessingLoaderUI()
+                                                  //     :
+                                                  Container(
                                                 padding: const EdgeInsets.only(
                                                   left: 14,
                                                   right: 14,
@@ -420,6 +401,57 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     );
   }
 
+  Align imageProcessingLoaderUI() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: InkWell(
+        onTap: () {
+          // _needsScroll = true;
+          // WidgetsBinding.instance
+          //     .addPostFrameCallback(
+          //         (_) =>
+          //             _scrollToEnd());
+        },
+        child: Container(
+          margin: const EdgeInsets.all(
+            10.0,
+          ),
+          width: 160,
+          height: 40,
+          child: Center(
+            child: textWithRegularStyle(
+              'processing...',
+              Colors.black,
+              14.0,
+            ),
+          ),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(
+              255,
+              250,
+              247,
+              247,
+            ),
+            borderRadius: BorderRadius.circular(
+              14.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(
+                  0,
+                  3,
+                ), // changes position of shadow
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 //
 //  Column receiverUI() {
   Column receiverUI(getSnapshot, int index) {
@@ -439,41 +471,52 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         //
         Align(
           alignment: Alignment.bottomLeft,
-          child: Container(
-            margin: const EdgeInsets.only(
-              right: 40,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(
-                  16,
+          child: (getSnapshot[index]['message'].toString() == '')
+              ? Container(
+                  margin: const EdgeInsets.all(10.0),
+                  color: Colors.transparent,
+                  width: 240,
+                  height: 240,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                      24,
+                    ),
+                    child: Image.network(
+                      getSnapshot[index]['attachment_path'].toString(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              : Container(
+                  margin: const EdgeInsets.only(
+                    right: 40,
+                  ),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(
+                        16,
+                      ),
+                      bottomRight: Radius.circular(
+                        16,
+                      ),
+                      topRight: Radius.circular(
+                        16,
+                      ),
+                    ),
+                    color: Colors.lightBlueAccent,
+                  ),
+                  padding: const EdgeInsets.all(
+                    16,
+                  ),
+                  child: Text(
+                    //
+                    getSnapshot[index]['message'].toString(),
+                    //
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
-                bottomRight: Radius.circular(
-                  16,
-                ),
-                topRight: Radius.circular(
-                  16,
-                ),
-              ),
-              color: Colors.blue[200],
-            ),
-            padding: const EdgeInsets.all(
-              16,
-            ),
-            child: textWithRegularStyle(
-              //
-              getSnapshot[index]['message'].toString(),
-              //
-              Colors.black,
-              14.0,
-            ),
-            // textWithRegularStyle(
-            //   getSnapshot[index]['message'].toString(),
-            //   14.0,
-            //   Colors.black,
-            //   'left',
-            // ),
-          ),
         ),
         //
         Align(
@@ -483,16 +526,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               getSnapshot[index]['time_stamp'],
             ),
             Colors.black,
-            14.0,
+            12.0,
           ),
-          // textWithRegularStyle(
-
-          //   12.0,
-          //   Colors.black,
-          //   'left',
-          // ),
         ),
-        //
       ],
     );
   }
@@ -583,14 +619,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   Container sendMessageUI() {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      color: const Color.fromRGBO(
-        246,
-        248,
-        253,
-        1,
-      ),
-      // height: 60,
-      // width: MediaQuery.of(context).size.width,
+      color: Colors.transparent,
       child: Row(
         children: [
           Padding(
@@ -641,7 +670,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           //
 
           Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               height: 40,
               width: 40,
@@ -824,11 +853,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               );
               if (pickedFile != null) {
                 setState(() {
+                  //
+                  strImageLoader = '1';
+                  //
+                  str_image_processing = '1';
                   print('camera');
                   imageFile = File(pickedFile.path);
                 });
                 //
-                str_image_processing = '1';
+
                 //
                 uploadImageToFirebase(context);
                 //
@@ -850,6 +883,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               );
               if (pickedFile != null) {
                 setState(() {
+                  //
+                  strImageLoader = '1';
+                  //
                   if (kDebugMode) {
                     print('gallery');
                   }
@@ -877,9 +913,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   // upload image via firebase
   Future uploadImageToFirebase(BuildContext context) async {
     if (kDebugMode) {
-      print('dishu');
+      print('=====> CREATING IMAGE URL <=====');
     }
-    // String fileName = basename(imageFile_for_profile!.path);
+
     Reference storageRef = FirebaseStorage.instance
         .ref()
         .child(
@@ -890,16 +926,16 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         );
     await storageRef.putFile(imageFile!);
     return await storageRef.getDownloadURL().then((value) => {
-          // print(
-          //   '======>$value',
-          // )
-          sendImagViaMessageForGroupChat(value)
+          sendImagViaMessageForGroupChat(value),
         });
   }
 
   sendImagViaMessageForGroupChat(attachmentPath) {
     // print(cont_txt_send_message.text);
 
+    setState(() {
+      strImageLoader = '0';
+    });
     CollectionReference users = FirebaseFirestore.instance.collection(
       '${strFirebaseMode}message/${widget.chatDialogData['group_id'].toString()}/details',
     );
@@ -920,6 +956,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         .then(
           (value) =>
               //
+              // strScrollOnlyOneTime = '',
+
               funcEditMessageAndInsertFirestoreId(value.id),
           //
         )
