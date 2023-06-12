@@ -173,11 +173,6 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
 
                               _currentItem = index;
 
-                              // print("INDEX =====> $index");
-                              // print("CURRENT INDEX =====> $_currentItem");
-                              // print(
-                              // "SERVER ARRAY INDEX =====> ${getSnapShopValue.length - 1}");
-
                               if (_currentItem == getSnapShopValue.length - 1) {
                                 setState(() {
                                   strScrollOnlyOneTime = '1';
@@ -196,28 +191,13 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                               bottom: 10,
                             ),
                             child: (getSnapShopValue[index]
-                                            ['sender_firebase_id']
+                                            ['sender_chat_user_id']
                                         .toString() ==
-                                    FirebaseAuth.instance.currentUser!.uid)
+                                    widget.strLoginSenderChatIdForPublic)
                                 ? rightSideUIOnlyForPublicChat(
                                     getSnapShopValue, index)
                                 : leftSideUIOnlyForPublicChat(
                                     getSnapShopValue, index),
-                            /*Align(
-                              alignment: (getSnapShopValue[index]
-                                              ['sender_firebase_id']
-                                          .toString() ==
-                                      FirebaseAuth.instance.currentUser!.uid
-                                  ? Alignment.topRight
-                                  : Alignment.topLeft),
-                              child: leftSideUIOnlyForPublicChat(
-                                  getSnapShopValue, index),
-                              // (getSnapShopValue[index]['sender_firebase_id']
-                              //             .toString() ==
-                              //         FirebaseAuth.instance.currentUser!.uid)
-                              //     ? senderUI(getSnapShopValue, index)
-                              //     : receiverUI(index),
-                            ),*/
                           ),
                         );
                       },
@@ -241,10 +221,73 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
     return Column(
       children: [
         //
+        // textWithRegularStyle('str', Colors.black, 12),
+        //
         Align(
           alignment: Alignment.bottomLeft,
           child: Row(
             children: [
+              //
+              GestureDetector(
+                onTap: () {
+                  //
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PrivateChatScreenTwo(
+                        strSenderName:
+                            widget.strLoginSenderNameForPublic.toString(),
+                        strReceiverName:
+                            getSnapshotData[index]['sender_name'].toString(),
+                        strReceiverFirebaseId: getSnapshotData[index]
+                                ['sender_firebase_id']
+                            .toString(),
+                        strSenderChatId:
+                            widget.strLoginSenderChatIdForPublic.toString(),
+                        strReceiverChatId: getSnapshotData[index]
+                                ['sender_chat_user_id']
+                            .toString(),
+                      ),
+                    ),
+                  );
+                  //
+                },
+                child: Container(
+                  height: 36,
+                  width: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(
+                      18.0,
+                    ),
+                  ),
+                  child: (getSnapshotData[index]['sender_gender'].toString() ==
+                          '0')
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
+                          ),
+                          child: Image.asset(
+                            'assets/images/man.png',
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
+                          ),
+                          child: Image.asset(
+                            'assets/images/woman.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                ),
+              ),
+              //
+              const SizedBox(
+                width: 4,
+              ),
+              //
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.only(right: 80),
@@ -287,23 +330,6 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                 ),
               ),
               //
-              // (getSnapshotData[index]['sender_firebase_id'].toString() ==
-              //         FirebaseAuth.instance.currentUser!.uid)
-              //     ? const SizedBox()
-              //     : IconButton(
-              //         onPressed: () {
-              //           if (kDebugMode) {
-              //             print('=====> CHAT WITH OTHERS CLICK <=====');
-              //           }
-              //           //
-
-              //           //
-              //         },
-              //         icon: const Icon(
-              //           Icons.chat,
-              //           color: Colors.purple,
-              //         ),
-              //       ),
             ],
             // 98061311374
             // 8800631774
@@ -315,6 +341,8 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
           child: Container(
             margin: const EdgeInsets.only(
               right: 40,
+              top: 4.0,
+              // left: 10.0,
             ),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(

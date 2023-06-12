@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,14 @@ class SetProfileForpublicScreen extends StatefulWidget {
 
 class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
   //
+  var strSelectGenderType = '0';
+  int segmentedControlValue = 0;
   late final TextEditingController contSetName;
+  //
+  var arrMaleIcons = [
+    'assets/images/public_chat_male_cool.png',
+    'assets/images/public_chat_male_rich.png',
+  ];
   //
   @override
   void initState() {
@@ -82,6 +90,9 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
           ),
         ),
       ),
+      //
+      backgroundColor: appDesertColor,
+      //
       body: Column(
         children: [
           //
@@ -146,6 +157,82 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
           ),
           //
           const SizedBox(
+            height: 20,
+          ),
+          //
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 300,
+              child: CupertinoSegmentedControl<int>(
+                selectedColor: navigationColor,
+                borderColor: Colors.white,
+                children: {
+                  0: Text('Male'),
+                  1: Text('Female'),
+                  // 2: Text('Prefer not to say'),
+                },
+                onValueChanged: (int val) {
+                  setState(() {
+                    print(val);
+                    segmentedControlValue = val;
+                  });
+                },
+                groupValue: segmentedControlValue,
+              ),
+            ),
+          ),
+          //
+          const SizedBox(
+            height: 10,
+          ),
+          //
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < arrMaleIcons.length; i++) ...[
+                  (segmentedControlValue == 0)
+                      ? Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlueAccent,
+                            borderRadius: BorderRadius.circular(
+                              22.0,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              20.0,
+                            ),
+                            child: Image.asset(
+                              //
+                              arrMaleIcons[i].toString(),
+                              //
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Colors.pink,
+                            borderRadius: BorderRadius.circular(
+                              22.0,
+                            ),
+                          ),
+                        ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                ]
+              ],
+            ),
+          ),
+          //
+          const SizedBox(
             height: 10,
           ),
           //
@@ -182,6 +269,22 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
             ),
           ),
           //
+          const SizedBox(
+            height: 100,
+          ),
+          //
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: textWithRegularStyle(
+                '',
+                // 'You can set any name and chat Anonymously with anybody. Your all data is safe and secured with us.',
+                Colors.grey,
+                14.0,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -240,7 +343,7 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
       {
         'chat_user_id': chatUserId,
         'time_stamp': DateTime.now().millisecondsSinceEpoch,
-        'gender_status': 'g', //_currentSelection.toString()
+        'gender_status': segmentedControlValue.toString(),
         'public_chat_name': contSetName.text.toString()
       },
       SetOptions(merge: true),
