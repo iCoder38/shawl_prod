@@ -19,6 +19,7 @@ import 'package:shawl_prod/classes/sign_up/sign_up.dart';
 // import 'package:crypto/crypto.dart';
 
 import '../Utils/utils.dart';
+import '../set_profile_for_public/set_profile_for_public.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -351,12 +352,20 @@ class _LoginScreenState extends State<LoginScreen> {
     //
     Navigator.pop(context);
     //
+    //
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const DialogScreen(),
+        builder: (context) => const SetProfileForpublicScreen(),
       ),
     );
+    //
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const DialogScreen(),
+    //   ),
+    // );
     //
   }
 

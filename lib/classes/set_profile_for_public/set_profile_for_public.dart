@@ -49,206 +49,211 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: textWithRegularStyle(
-          'Create Public Profile',
-          Colors.black,
-          18.0,
-        ),
-        automaticallyImplyLeading: false,
-        backgroundColor: navigationColor,
-        leading: SizedBox(
-          height: 40,
-          width: 120,
-          // color: Colors.amber,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: NeoPopButton(
-              color: navigationColor,
-              // onTapUp: () => HapticFeedback.vibrate(),
-              border: Border.all(
-                color: Colors.white,
-                width: 2,
-              ),
-              onTapUp: () {
-                //
-                Navigator.pop(context);
-                //
-              },
-              onTapDown: () => HapticFeedback.vibrate(),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  )
-                ],
-              ),
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: textWithRegularStyle(
+            'Create Public Profile',
+            Colors.black,
+            18.0,
           ),
-        ),
-      ),
-      //
-      backgroundColor: appDesertColor,
-      //
-      body: Column(
-        children: [
-          //
-          const SizedBox(
-            height: 20,
-          ),
-          //
-          Row(
-            children: [
-              //
-              const SizedBox(
-                width: 10,
-              ),
-              //
-              Align(
-                alignment: Alignment.topLeft,
-                child: textWithRegularStyle(
-                  'Set your name',
-                  Colors.black,
-                  14.0,
-                ),
-              ),
-            ],
-          ),
-          //
-          Container(
-            margin: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-              top: 5,
-            ),
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                12.0,
-              ),
-              color: Colors.white,
-              border: Border.all(width: 0.4),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color.fromARGB(255, 188, 182, 182),
-                  blurRadius: 6.0,
-                  spreadRadius: 2.0,
-                  offset: Offset(0.0, 0.0),
-                )
-              ],
-            ),
-            child: TextFormField(
-              controller: contSetName,
-              textAlign: TextAlign.center,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Name',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some name';
-                }
-                return null;
-              },
-            ),
-          ),
-          //
-          const SizedBox(
-            height: 20,
-          ),
-          //
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 300,
-              child: CupertinoSegmentedControl<int>(
-                selectedColor: navigationColor,
-                borderColor: Colors.white,
-                children: {
-                  0: Text('Male'),
-                  1: Text('Female'),
-                  // 2: Text('Prefer not to say'),
-                },
-                onValueChanged: (int val) {
-                  setState(() {
-                    print(val);
-                    segmentedControlValue = val;
-                  });
-                },
-                groupValue: segmentedControlValue,
-              ),
-            ),
-          ),
-          //
-          const SizedBox(
-            height: 10,
-          ),
-          //
-          // selectAvatarUI(),
-          //
-          const SizedBox(
-            height: 10,
-          ),
-          //
-          SizedBox(
-            height: 60,
-            width: 240,
+          automaticallyImplyLeading: false,
+          backgroundColor: navigationColor,
+          /*leading: SizedBox(
+            height: 40,
+            width: 120,
+            // color: Colors.amber,
             child: Padding(
-              padding: const EdgeInsets.all(6.0),
+              padding: const EdgeInsets.all(8.0),
               child: NeoPopButton(
-                color: Colors.lightBlueAccent,
+                color: navigationColor,
                 // onTapUp: () => HapticFeedback.vibrate(),
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.white,
                   width: 2,
                 ),
                 onTapUp: () {
                   //
-                  if (contSetName.text == '') {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    popUpWithOutsideClick(
-                        context, 'Please enter some name.', 'Ok');
-                  } else {
-                    showCustomDialog(context, 'creating...');
-                    funcSetProfileForChat();
-                  }
+                  Navigator.pop(context);
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    textWithBoldStyle(
-                      'Create and Enter',
-                      Colors.black,
-                      14.0,
-                    ),
+                    Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    )
                   ],
                 ),
               ),
             ),
-          ),
-          //
-          const SizedBox(
-            height: 100,
-          ),
-          //
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: textWithRegularStyle(
-                '',
-                // 'You can set any name and chat Anonymously with anybody. Your all data is safe and secured with us.',
-                Colors.grey,
-                14.0,
+          ),*/
+        ),
+        //
+        backgroundColor: appDesertColor,
+        //
+        body: Column(
+          children: [
+            //
+            const SizedBox(
+              height: 20,
+            ),
+            //
+            Row(
+              children: [
+                //
+                const SizedBox(
+                  width: 10,
+                ),
+                //
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: textWithRegularStyle(
+                    'Set your name',
+                    Colors.black,
+                    14.0,
+                  ),
+                ),
+              ],
+            ),
+            //
+            Container(
+              margin: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+                top: 5,
+              ),
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  12.0,
+                ),
+                color: Colors.white,
+                border: Border.all(width: 0.4),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 188, 182, 182),
+                    blurRadius: 6.0,
+                    spreadRadius: 2.0,
+                    offset: Offset(0.0, 0.0),
+                  )
+                ],
+              ),
+              child: TextFormField(
+                controller: contSetName,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Name',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some name';
+                  }
+                  return null;
+                },
               ),
             ),
-          ),
-        ],
+            //
+            const SizedBox(
+              height: 20,
+            ),
+            //
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 300,
+                child: CupertinoSegmentedControl<int>(
+                  selectedColor: navigationColor,
+                  borderColor: Colors.white,
+                  children: {
+                    0: Text('Male'),
+                    1: Text('Female'),
+                    // 2: Text('Prefer not to say'),
+                  },
+                  onValueChanged: (int val) {
+                    setState(() {
+                      print(val);
+                      segmentedControlValue = val;
+                    });
+                  },
+                  groupValue: segmentedControlValue,
+                ),
+              ),
+            ),
+            //
+            const SizedBox(
+              height: 10,
+            ),
+            //
+            // selectAvatarUI(),
+            //
+            const SizedBox(
+              height: 10,
+            ),
+            //
+            SizedBox(
+              height: 60,
+              width: 240,
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: NeoPopButton(
+                  color: Colors.lightBlueAccent,
+                  // onTapUp: () => HapticFeedback.vibrate(),
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2,
+                  ),
+                  onTapUp: () {
+                    //
+                    if (contSetName.text == '') {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      popUpWithOutsideClick(
+                          context, 'Please enter some name.', 'Ok');
+                    } else {
+                      showCustomDialog(context, 'creating...');
+                      funcSetProfileForChat();
+                    }
+                    //
+                  },
+                  onTapDown: () => HapticFeedback.vibrate(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      textWithBoldStyle(
+                        'Create and Enter',
+                        Colors.black,
+                        14.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            //
+            const SizedBox(
+              height: 100,
+            ),
+            //
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: textWithRegularStyle(
+                  '',
+                  // 'You can set any name and chat Anonymously with anybody. Your all data is safe and secured with us.',
+                  Colors.grey,
+                  14.0,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

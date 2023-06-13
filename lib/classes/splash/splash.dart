@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shawl_prod/classes/chat_dialog/chat_dialog.dart';
+import 'package:shawl_prod/classes/set_profile_for_public/set_profile_for_public.dart';
 // import 'package:water_ship/classes/chat_dialog/chat_dialog.dart';
 
 import '../../main.dart';
@@ -163,12 +164,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 'Ok',
               );
             } else {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => const DialogScreen(),
+              //   ),
+              // );
+              //
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DialogScreen(),
+                  builder: (context) => const SetProfileForpublicScreen(),
                 ),
               );
+              //
             }
 
             //

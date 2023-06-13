@@ -372,7 +372,7 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
               //
               getSnapshotData[index]['message'].toString(),
               //
-              18.0,
+              14.0,
               Colors.black,
               'left',
             ),
@@ -434,13 +434,13 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                   16,
                 ),
                 bottomLeft: Radius.circular(
-                  0,
+                  16,
                 ),
                 topRight: Radius.circular(
                   16,
                 ),
                 bottomRight: Radius.circular(
-                  16,
+                  0,
                 ),
               ),
               // color: Color.fromARGB(255, 103, 167, 236),
@@ -451,7 +451,7 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
               //
               getSnapshotData[index]['message'].toString(),
               //
-              16.0,
+              14.0,
               Colors.black,
               'right',
             ),

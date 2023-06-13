@@ -25,7 +25,8 @@ var databaseTableName = 'test3';
 
 /* ========================FIREBASE MODE ======================== */ //
 // test mode
-var strFirebaseMode = 'mode/test/';
+// var strFirebaseMode = 'mode/test/';
+var strFirebaseMode = 'mode/live/';
 /* ================================================================ */
 
 var appId = 'bbe938fe04a746fd9019971106fa51ff';
