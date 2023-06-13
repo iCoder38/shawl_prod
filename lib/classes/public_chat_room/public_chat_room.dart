@@ -119,6 +119,8 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
                   ),
                   onTapUp: () {
                     //
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    //
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -274,6 +276,16 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
   // send message
   sendMessageViaFirebase(strLastMessageEntered) {
     // print(cont_txt_send_message.text);
+    // setState(() {});
+    // controller.animateTo(
+
+    // controller.animateTo(
+    //   controller.position.maxScrollExtent + 300,
+    //   duration: const Duration(
+    //     milliseconds: 200,
+    //   ),
+    //   curve: Curves.easeInOut,
+    // );
 
     CollectionReference users = FirebaseFirestore.instance.collection(
       '${strFirebaseMode}message/India/public_chats',
