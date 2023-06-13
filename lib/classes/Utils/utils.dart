@@ -261,7 +261,11 @@ void logoutpopup(BuildContext context, String message) async {
 
 //
 //
-void popUpWithOutsideClick(BuildContext context, String message) async {
+void popUpWithOutsideClick(
+  BuildContext context,
+  String message,
+  String dismiss_text,
+) async {
   await showDialog(
     barrierDismissible: false,
     context: context,
@@ -301,7 +305,9 @@ void popUpWithOutsideClick(BuildContext context, String message) async {
                         //
                       },
                       child: textWithBoldStyle(
-                        'dismiss',
+                        //
+                        dismiss_text,
+                        //
                         Colors.black,
                         14.0,
                       ),

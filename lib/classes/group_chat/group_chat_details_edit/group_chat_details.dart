@@ -36,7 +36,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
   var strFriendsList = '0';
   //
   //
-  late final TextEditingController contEmail;
+  late final TextEditingController contGroupName;
   //
   var strCheckmark = '0';
   File? imageFile;
@@ -77,7 +77,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
 
   funcGroupDetails() {
     // set group name
-    contEmail = TextEditingController(
+    contGroupName = TextEditingController(
         text: widget.dictGetDataForDetails['group_name'].toString());
     strSaveGroupNameAfterUpdate =
         widget.dictGetDataForDetails['group_name'].toString();
@@ -104,7 +104,8 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
                 onPressed: () {
                   Navigator.pop(
                     context,
-                    strSaveGroupNameAfterUpdate.toString(),
+                    //strSaveGroupNameAfterUpdate.toString(),
+                    'ok',
                   );
                 },
                 icon: const Icon(
@@ -532,7 +533,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: TextFormField(
-                  controller: contEmail,
+                  controller: contGroupName,
                   keyboardType: TextInputType.emailAddress,
                   readOnly: false,
                   // controller: contGrindCategory,
@@ -730,7 +731,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
         .doc(firestoreId)
         .set(
       {
-        'group_name': contEmail.text.toString(),
+        'group_name': contGroupName.text.toString(),
         'group_display_image': strGetImageData.toString(),
       },
       SetOptions(merge: true),
@@ -746,7 +747,7 @@ class _GroupChatDetailsScreenState extends State<GroupChatDetailsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         //
         setState(() {
-          strSaveGroupNameAfterUpdate = contEmail.text.toString();
+          strSaveGroupNameAfterUpdate = contGroupName.text.toString();
 
           strProfilImageLoader = '2';
         });

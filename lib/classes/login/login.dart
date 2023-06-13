@@ -245,9 +245,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               //
+              const SizedBox(
+                height: 20,
+              ),
+              //
               SizedBox(
                 height: 60,
-                width: MediaQuery.of(context).size.width,
+                width: 200,
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: NeoPopButton(
@@ -276,6 +280,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Colors.black,
                           14.0,
                         ),
+                        //
+                        const Icon(
+                          Icons.arrow_forward,
+                          size: 20.0,
+                        ),
+                        //
                       ],
                     ),
                   ),
@@ -292,6 +302,9 @@ class _LoginScreenState extends State<LoginScreen> {
   //
   //
   signInViaFirebase() async {
+    // dismiss keyboard
+    FocusScope.of(context).requestFocus(FocusNode());
+    //
     try {
       UserCredential customUserCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
@@ -301,14 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print(customUserCredential);
       }
       //
-      Navigator.pop(context);
-      //
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DialogScreen(),
-        ),
-      );
+      funcCheckIsThisAccountVerifiedOrNot();
       //
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
@@ -323,6 +329,35 @@ class _LoginScreenState extends State<LoginScreen> {
         // print(e);
       }
     }
+  }
+
+  //
+  funcCheckIsThisAccountVerifiedOrNot() async {
+    print(FirebaseAuth.instance.currentUser!.emailVerified);
+    Navigator.pop(context);
+    if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
+      popUpWithOutsideClick(
+        context,
+        'Your account is not verified yet. Please verify your account by click verification link in your registered E-Mail address.',
+        'Ok',
+      );
+    } else {
+      funcPushToLoginScreen();
+    }
+  }
+
+  //
+  funcPushToLoginScreen() {
+    //
+    Navigator.pop(context);
+    //
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DialogScreen(),
+      ),
+    );
+    //
   }
 
   //

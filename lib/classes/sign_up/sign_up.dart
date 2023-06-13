@@ -340,7 +340,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               //
               SizedBox(
                 height: 60,
-                width: 180,
+                width: 200,
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: NeoPopButton(
@@ -377,6 +377,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               //
+              const SizedBox(
+                height: 100,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: textWithRegularStyle(
+                    'Please enter your registered E-mail address. We only get your Email for Security purpose only. We will not share any type of your data to anyone. Your all data is all Safe and Secured with us.\n\nCheers :) Feel free and chat anonymously.',
+                    Colors.grey,
+                    12.0,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -435,13 +449,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     //   print(encrypted.base64);
     // }
 
-    FirebaseAuth.instance.currentUser!
-        // .updateDisplayName(encrypted.base64.toString())
-        .updateDisplayName(contName.text)
-        .then((value) => {
-              // create user in DB
-              funcCreateUserNowInXMPP(),
-            });
+    FirebaseAuth.instance.currentUser?.sendEmailVerification().then((value) => {
+          // AFTER SENT EMAIL VERIFICATIOIN THEN UPDATE NAME
+          FirebaseAuth.instance.currentUser!
+              // .updateDisplayName(encrypted.base64.toString())
+              .updateDisplayName(contName.text)
+              .then((value) => {
+                    // create user in DB
+                    funcCreateUserNowInXMPP(),
+                  }),
+        });
+
     //
   }
 
@@ -510,6 +528,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //
   funcSuccessMessageAfterCompleteAllRegistrationInXMPP() {
     //
+    // var emailAuth = 'someemail@domain.com';
+    // FirebaseAuth.instance
+    //     .sendSignInLinkToEmail(email: emailAuth, actionCodeSettings: acs)
+    //     .catchError(
+    //         (onError) => print('Error sending email verification $onError'))
+    //     .then((value) => print('Successfully sent email verification'));
+
     Navigator.pop(context);
     Navigator.pop(context);
     //
@@ -518,7 +543,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Colors.lightBlueAccent,
         content: textWithBoldStyle(
           //
-          'Successfully Created'.toString(),
+          'Successfully Created.'.toString(),
           //
           Colors.white,
           14.0,

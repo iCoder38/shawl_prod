@@ -187,50 +187,7 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
             height: 10,
           ),
           //
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < arrMaleIcons.length; i++) ...[
-                  (segmentedControlValue == 0)
-                      ? Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlueAccent,
-                            borderRadius: BorderRadius.circular(
-                              22.0,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              20.0,
-                            ),
-                            child: Image.asset(
-                              //
-                              arrMaleIcons[i].toString(),
-                              //
-                            ),
-                          ),
-                        )
-                      : Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: Colors.pink,
-                            borderRadius: BorderRadius.circular(
-                              22.0,
-                            ),
-                          ),
-                        ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                ]
-              ],
-            ),
-          ),
+          // selectAvatarUI(),
           //
           const SizedBox(
             height: 10,
@@ -250,8 +207,14 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
                 ),
                 onTapUp: () {
                   //
-                  showCustomDialog(context, 'creating...');
-                  funcSetProfileForChat();
+                  if (contSetName.text == '') {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    popUpWithOutsideClick(
+                        context, 'Please enter some name.', 'Ok');
+                  } else {
+                    showCustomDialog(context, 'creating...');
+                    funcSetProfileForChat();
+                  }
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
@@ -290,6 +253,53 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
     );
   }
 
+  SingleChildScrollView selectAvatarUI() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (int i = 0; i < arrMaleIcons.length; i++) ...[
+            (segmentedControlValue == 0)
+                ? Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlueAccent,
+                      borderRadius: BorderRadius.circular(
+                        22.0,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: Image.asset(
+                        //
+                        arrMaleIcons[i].toString(),
+                        //
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.pink,
+                      borderRadius: BorderRadius.circular(
+                        22.0,
+                      ),
+                    ),
+                  ),
+            SizedBox(
+              width: 8,
+            ),
+          ]
+        ],
+      ),
+    );
+  }
+
 // CHECK PROFILE DATA AFTER CLICK ON SET
   funcSetProfileForChat() {
     FirebaseFirestore.instance
@@ -320,6 +330,7 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
             print(element.id);
             print(element.id.runtimeType);
           }
+
           // EDIT USER IF IT ALREADY EXIST
           funcCreatePublicName(element.id);
         }
@@ -357,6 +368,7 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
             builder: (context) => PublicChatRoomScreen(
               strSenderName: contSetName.text.toString(),
               strSenderChatId: chatUserId.toString(),
+              strSenderGender: segmentedControlValue.toString(),
             ),
           ),
         );

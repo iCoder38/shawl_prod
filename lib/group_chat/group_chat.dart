@@ -211,10 +211,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     print('=============== DIALOG DATA IN CHAT ==============');
                     print(snapshot);
                     print(snapshot.data!);
-                    print(snapshot.data!.docs);
+                    print(snapshot.data!.docs[0]['group_name']);
+
                     print(snapshot.data!.docs.length);
                     print('======================================');
                   }
+                  //
+                  strGroupName = snapshot.data!.docs[0]['group_name'];
+                  //
 
                   var saveSnapshotValue = snapshot.data!.docs;
                   if (kDebugMode) {
@@ -265,7 +269,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                               return StreamBuilder(
                                   stream: FirebaseFirestore.instance
                                       .collection(
-                                        "${strFirebaseMode}message/${widget.chatDialogData['group_id'].toString()}/details",
+                                        "${strFirebaseMode}group_messages/${widget.chatDialogData['group_id'].toString()}/details",
                                       )
                                       .orderBy('time_stamp', descending: true)
                                       .limit(40)
@@ -508,13 +512,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   padding: const EdgeInsets.all(
                     16,
                   ),
-                  child: Text(
-                    //
+                  child: textWithRegularStyle(
                     getSnapshot[index]['message'].toString(),
-                    //
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
+                    Colors.black,
+                    16.0,
                   ),
                 ),
         ),
@@ -554,9 +555,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           child: (getSnapshot[index]['message'].toString() == '')
               ? Container(
                   margin: const EdgeInsets.all(10.0),
-                  color: Colors.transparent,
                   width: 240,
                   height: 240,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(
+                      24.0,
+                    ),
+                  ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(
                       24,
@@ -588,13 +594,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   padding: const EdgeInsets.all(
                     16,
                   ),
-                  child: Text(
-                    //
+                  child: textWithRegularStyle(
                     getSnapshot[index]['message'].toString(),
-                    //
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
+                    Colors.black,
+                    16.0,
                   ),
                 ),
         ),
@@ -736,7 +739,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     // print(cont_txt_send_message.text);
 
     CollectionReference users = FirebaseFirestore.instance.collection(
-      '${strFirebaseMode}message/${widget.chatDialogData['group_id'].toString()}/details',
+      '${strFirebaseMode}group_messages/${widget.chatDialogData['group_id'].toString()}/details',
     );
 
     users
@@ -937,7 +940,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       strImageLoader = '0';
     });
     CollectionReference users = FirebaseFirestore.instance.collection(
-      '${strFirebaseMode}message/${widget.chatDialogData['group_id'].toString()}/details',
+      '${strFirebaseMode}group_messages/${widget.chatDialogData['group_id'].toString()}/details',
     );
 
     users
@@ -991,13 +994,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
     if (!mounted) return;
     //
-    // if (result == 'from_email_setting') {
-    print(result);
-    setState(() {
-      strGroupName = result;
-    });
-    // funcGetLocalDBdata();
-    // }
+    if (result == 'ok') {
+      print(result);
+      setState(() {
+        print('=====> update UI');
+        // strGroupName = result;
+      });
+      // funcGetLocalDBdata();
+    }
   }
 
   funcRemoved() {

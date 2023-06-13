@@ -150,12 +150,27 @@ class _SplashScreenState extends State<SplashScreen> {
             if (kDebugMode) {
               print('SUCCESSSFULLTT SIGNED IN');
             }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const DialogScreen(),
-              ),
-            );
+            if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+              popUpWithOutsideClick(
+                context,
+                'Your account is not verified yet. Please verify your account.',
+                'Ok',
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DialogScreen(),
+                ),
+              );
+            }
+
             //
           } else {
             // signed out

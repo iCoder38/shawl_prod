@@ -22,10 +22,14 @@ import '../Utils/utils.dart';
 
 class PublicChatRoomScreen extends StatefulWidget {
   const PublicChatRoomScreen(
-      {super.key, required this.strSenderName, required this.strSenderChatId});
+      {super.key,
+      required this.strSenderName,
+      required this.strSenderChatId,
+      required this.strSenderGender});
 
   final String strSenderName;
   final String strSenderChatId;
+  final String strSenderGender;
 
   @override
   State<PublicChatRoomScreen> createState() => _PublicChatRoomScreenState();
@@ -280,7 +284,7 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
           {
             'sender_chat_user_id': widget.strSenderChatId.toString(),
             'sender_name': widget.strSenderName.toString(),
-            'sender_gender': 'gender',
+            'sender_gender': widget.strSenderGender.toString(),
             'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
             'message': strLastMessageEntered.toString(),
             'time_stamp': DateTime.now().millisecondsSinceEpoch,
