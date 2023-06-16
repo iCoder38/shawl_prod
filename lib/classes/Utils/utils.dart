@@ -35,7 +35,7 @@ var appId = 'bbe938fe04a746fd9019971106fa51ff';
 
 var navigationColor = const Color.fromRGBO(255, 180, 170, 1);
 var appBlueColor = const Color.fromRGBO(57, 49, 157, 1);
-var appDesertColor = Color.fromRGBO(230, 228, 210, 1);
+var appDesertColor = const Color.fromRGBO(230, 228, 210, 1);
 
 var navigationTitleGetStarted = 'Get Started Now';
 var navigationTitleLogin = 'Login';
@@ -265,10 +265,10 @@ void logoutpopup(BuildContext context, String message) async {
 void popUpWithOutsideClick(
   BuildContext context,
   String message,
-  String dismiss_text,
+  String dismissText,
 ) async {
   await showDialog(
-    barrierDismissible: false,
+    barrierDismissible: true,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -307,7 +307,7 @@ void popUpWithOutsideClick(
                       },
                       child: textWithBoldStyle(
                         //
-                        dismiss_text,
+                        dismissText,
                         //
                         Colors.black,
                         14.0,

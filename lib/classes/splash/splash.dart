@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       //   ),
       //   backgroundColor: navigationColor,
       // ),
-      backgroundColor: Color.fromRGBO(
+      backgroundColor: const Color.fromRGBO(
         230,
         228,
         210,
@@ -149,7 +149,7 @@ class _SplashScreenState extends State<SplashScreen> {
             // signed in
             //
             if (kDebugMode) {
-              print('SUCCESSSFULLTT SIGNED IN');
+              print('SUCCESSSFULLY SIGNED IN');
             }
             if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
               Navigator.push(

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shawl_prod/classes/public_chat_room/public_chat_room.dart';
 import 'package:uuid/uuid.dart';
 
@@ -62,7 +63,7 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
           ),
           automaticallyImplyLeading: false,
           backgroundColor: navigationColor,
-          /*leading: SizedBox(
+          leading: SizedBox(
             height: 40,
             width: 120,
             // color: Colors.amber,
@@ -77,7 +78,8 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
                 ),
                 onTapUp: () {
                   //
-                  Navigator.pop(context);
+                  // print(FirebaseAuth.instance.currentUser!.photoURL);
+                  logoutpopup(context, 'Are you sure you want to logout?');
                   //
                 },
                 onTapDown: () => HapticFeedback.vibrate(),
@@ -85,14 +87,14 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
+                      Icons.logout,
+                      color: Colors.redAccent,
                     )
                   ],
                 ),
               ),
             ),
-          ),*/
+          ),
         ),
         //
         backgroundColor: appDesertColor,
@@ -344,11 +346,15 @@ class _SetProfileForpublicScreenState extends State<SetProfileForpublicScreen> {
   }
 
   // CREATE PUBLIC NAME
-  funcCreatePublicName(firestore) {
+  funcCreatePublicName(firestore) async {
     var chatUserId = const Uuid().v4();
     if (kDebugMode) {
       print(chatUserId);
     }
+    //
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString('login_user_chat_id', chatUserId.toString());
+    //
 
     FirebaseFirestore.instance
         .collection("${strFirebaseMode}user")

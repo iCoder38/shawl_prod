@@ -6,8 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
+import 'package:shawl_prod/classes/private_chat/private_chat_image_accept.dart/private_chat_image_accept.dart';
+import 'package:shawl_prod/classes/private_chat/private_chat_image_decline/private_chat_image_decline.dart';
+import 'package:shawl_prod/classes/private_chat/private_chat_receiver/private_chat_receiver_image_accept/private_chat_receiver_image_accept.dart';
 
 import '../Utils/utils.dart';
+import 'private_chat_receiver/private_chat_receiver_image_decline/private_chat_receiver_image_decline.dart';
 
 // import '../headers/utils/utils.dart';
 // import 'package:my_new_orange/header/utils/Utils.dart';
@@ -38,6 +42,9 @@ class PrivateChatScreenTwo extends StatefulWidget {
 }
 
 class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
+  //
+  var strAppBarPermissionStatus = false;
+  bool light = false;
   //
   bool _needsScroll = false;
   final ScrollController _scrollController = ScrollController();
@@ -71,7 +78,8 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
       print(roomId);
       print(reverseRoomId);
     }
-
+    //
+    funcDummy();
     //
   }
 
@@ -124,6 +132,36 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
           ),
         ),
         backgroundColor: navigationColor,
+        actions: [
+          //
+          Align(
+            alignment: Alignment.center,
+            child: textWithRegularStyle(
+              'Image \npermission',
+              Colors.black,
+              14.0,
+            ),
+          ),
+          //
+          Switch(
+            // This bool value toggles the switch.
+            value: light,
+            activeColor: Colors.greenAccent,
+            onChanged: (bool value) {
+              // This is called when the user toggles the switch.
+              setState(() {
+                strAppBarPermissionStatus = value;
+              });
+              //
+              (strAppBarPermissionStatus == true)
+                  ? funcGivePermissionAlertMessage('1',
+                      'You give permission to "abcd" to share image with you.')
+                  : funcGivePermissionAlertMessage('2',
+                      '"abcd" will not be able to share image with you now.');
+              //
+            },
+          ),
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -139,143 +177,51 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
             Container(
               color: Colors.transparent,
               margin: const EdgeInsets.only(top: 0, bottom: 60),
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection(
-                        "${strFirebaseMode}message/India/private_chats",
-                      )
-                      .orderBy('time_stamp', descending: true)
-                      .where(
-                        'room_id',
-                        whereIn: [
-                          roomId,
-                          reverseRoomId,
-                        ],
-                      )
-                      .limit(40)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasData) {
-                      if (kDebugMode) {
-                        print('=====> YES, DATA');
-                      }
-                      //
-                      if (strScrollOnlyOneTime == '1') {
-                        _needsScroll = true;
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((_) => _scrollToEnd());
-                      }
-                      //
+              child:
+                  // showPrivateChatUI(), /*
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('${strFirebaseMode}dialog')
+                          .doc('India')
+                          .collection('details')
+                          .orderBy('time_stamp', descending: true)
+                          .where('users', arrayContainsAny: [
+                        roomId,
+                        reverseRoomId,
+                      ]).snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot2) {
+                        if (snapshot2.hasData) {
+                          if (kDebugMode) {
+                            print(
+                                '=====> YES, YOUR FIREBASE ID IS AVAILAIBLE 1. ');
+                          }
+                          var saveSnapshotValue2 = snapshot2.data!.docs;
+                          //
+                          if (kDebugMode) {
+                            print(snapshot2.hasData);
+                            print(snapshot2.data!.docs.length);
+                            print(saveSnapshotValue2[0]['permission_user_1']);
+                          }
 
-                      var getSnapShopValue =
-                          snapshot.data!.docs.reversed.toList();
-                      if (kDebugMode) {
-                        // print(getSnapShopValue);
-                      }
-                      return Stack(
-                        children: [
-                          if (strScrollOnlyOneTime == '1') ...[
-                            const SizedBox(
-                              height: 0,
-                            )
-                          ] else ...[
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: InkWell(
-                                onTap: () {
-                                  _needsScroll = true;
-                                  WidgetsBinding.instance.addPostFrameCallback(
-                                      (_) => _scrollToEnd());
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(10.0),
-                                  width: 120,
-                                  height: 40,
-                                  child: Center(
-                                    child: textWithSemiBoldStyle(
-                                      'New message',
-                                      14.0,
-                                      Colors.black,
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                      255,
-                                      250,
-                                      247,
-                                      247,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      14.0,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 5,
-                                        blurRadius: 7,
-                                        offset: const Offset(
-                                          0,
-                                          3,
-                                        ), // changes position of shadow
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                          ListView.builder(
-                            // controller: controller,
-                            controller: _scrollController,
-                            itemCount: getSnapShopValue.length,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Container(
-                                padding: const EdgeInsets.only(
-                                  left: 14,
-                                  right: 14,
-                                  //
-                                  top: 10,
-                                  bottom: 10,
-                                ),
-                                child: Align(
-                                  alignment: (getSnapShopValue[index]
-                                                  ['sender_firebase_id']
-                                              .toString() ==
-                                          FirebaseAuth.instance.currentUser!.uid
-                                      ? Alignment.topRight
-                                      : Alignment.topLeft),
-                                  child: (getSnapShopValue[index]
-                                                  ['sender_firebase_id']
-                                              .toString() ==
-                                          FirebaseAuth
-                                              .instance.currentUser!.uid)
-                                      ? senderUI(getSnapShopValue, index)
-                                      : receiverUI(getSnapShopValue, index),
-                                ),
-                              );
-                            },
-                          )
-                        ],
-                      );
-                    } else if (snapshot.hasError) {
-                      // return Center(
-                      //   child: Text(
-                      //     'Error: ${snapshot.error}',
-                      //   ),
+                          // strAppBarPermissionStatus
 
-                      // );
-                      if (kDebugMode) {
-                        print(snapshot.error);
-                      }
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }),
+                          return showPrivateChatUI();
+                          //
+                        } else if (snapshot2.hasError) {
+                          if (kDebugMode) {
+                            print(snapshot2.error);
+                          }
+                          return Center(
+                            child: Text('Error: ${snapshot2.error}'),
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
+
+              /**/
             ),
             //
             // ======> SEND MESSAGE UI <======
@@ -293,42 +239,211 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
     );
   }
 
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> showPrivateChatUI() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection(
+            "${strFirebaseMode}message/India/private_chats",
+          )
+          .orderBy('time_stamp', descending: true)
+          .where(
+            'room_id',
+            whereIn: [
+              roomId,
+              reverseRoomId,
+            ],
+          )
+          .limit(40)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
+          if (kDebugMode) {
+            print('=====> YES, DATA');
+          }
+          //
+          if (strScrollOnlyOneTime == '1') {
+            _needsScroll = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
+          }
+          //
+
+          var getSnapShopValue = snapshot.data!.docs.reversed.toList();
+          if (kDebugMode) {
+            // print(getSnapShopValue);
+          }
+          //
+          return oneToOneChatUI(getSnapShopValue);
+          //
+        } else if (snapshot.hasError) {
+          if (kDebugMode) {
+            print(
+              'Error =========> ${snapshot.error}',
+            );
+          }
+          if (kDebugMode) {
+            print(snapshot.error);
+          }
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  Stack oneToOneChatUI(List<QueryDocumentSnapshot<Object?>> getSnapShopValue) {
+    return Stack(
+      children: [
+        if (strScrollOnlyOneTime == '1') ...[
+          const SizedBox(
+            height: 0,
+          )
+        ] else ...[
+          Align(
+            alignment: Alignment.topCenter,
+            child: InkWell(
+              onTap: () {
+                _needsScroll = true;
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _scrollToEnd());
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                width: 120,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(
+                    255,
+                    250,
+                    247,
+                    247,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    14.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(
+                        0,
+                        3,
+                      ), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: textWithSemiBoldStyle(
+                    'New message',
+                    14.0,
+                    Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+        ListView.builder(
+          // controller: controller,
+          controller: _scrollController,
+          itemCount: getSnapShopValue.length,
+          shrinkWrap: true,
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          physics: const BouncingScrollPhysics(),
+          itemBuilder: (context, index) {
+            return Container(
+              padding: const EdgeInsets.only(
+                left: 14,
+                right: 14,
+                //
+                top: 10,
+                bottom: 10,
+              ),
+              child: Align(
+                alignment:
+                    (getSnapShopValue[index]['sender_firebase_id'].toString() ==
+                            FirebaseAuth.instance.currentUser!.uid
+                        ? Alignment.topRight
+                        : Alignment.topLeft),
+                child: Column(
+                  children: [
+                    if (getSnapShopValue[index]['sender_firebase_id']
+                            .toString() ==
+                        FirebaseAuth.instance.currentUser!.uid) ...[
+                      // sender UI
+                      senderUI(getSnapShopValue, index)
+                      //
+                    ] else ...[
+                      // receiver UI
+                      receiverUI(getSnapShopValue, index),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          },
+        )
+      ],
+    );
+  }
+
   //
 //  Column receiverUI() {
   Column receiverUI(getSnapshot, int index) {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            margin: const EdgeInsets.only(
-              right: 40,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(
-                  16,
-                ),
-                bottomRight: Radius.circular(
-                  16,
-                ),
-                topRight: Radius.circular(
-                  16,
-                ),
+        //
+        if (getSnapshot[index]['type'].toString() ==
+            'image_permission_accept') ...[
+          //
+          PrivateChatReceiverImageAcceptScreen(
+            privateChatReceiverImageAccept: getSnapshot[index],
+          ),
+          //
+        ] else if (getSnapshot[index]['type'].toString() ==
+            'image_permission_decline') ...[
+          //
+          PrivateChatReceiverImageDeclineScreen(
+            privateChatReceiverImageDecline: getSnapshot[index],
+          ),
+          //
+        ] else ...[
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              margin: const EdgeInsets.only(
+                right: 40,
               ),
-              color: Colors.blue[200],
-            ),
-            padding: const EdgeInsets.all(
-              16,
-            ),
-            child: textWithRegularStyleLeft(
-              getSnapshot[index]['message'].toString(),
-              14.0,
-              Colors.black,
-              'left',
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(
+                    16,
+                  ),
+                  bottomRight: Radius.circular(
+                    16,
+                  ),
+                  topRight: Radius.circular(
+                    16,
+                  ),
+                ),
+                color: Colors.blue[200],
+              ),
+              padding: const EdgeInsets.all(
+                16,
+              ),
+              child: textWithRegularStyleLeft(
+                //
+                getSnapshot[index]['message'].toString(),
+                //
+                14.0,
+                Colors.black,
+                'left',
+              ),
             ),
           ),
-        ),
+        ],
+
         //
         Align(
           alignment: Alignment.bottomLeft,
@@ -353,48 +468,54 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
   Column senderUI(getSnapshot, int index) {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            margin: const EdgeInsets.only(
-              left: 40,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(
-                  16,
-                ),
-                bottomLeft: Radius.circular(
-                  16,
-                ),
-                topRight: Radius.circular(
-                  16,
-                ),
+        if (getSnapshot[index]['type'].toString() ==
+            'image_permission_accept') ...[
+          //
+          PrivateChatImageAcceptScreen(
+              getPrivateChatDataAccept: getSnapshot[index]),
+          //
+        ] else if (getSnapshot[index]['type'].toString() ==
+            'image_permission_decline') ...[
+          //
+          PrivateChatImageDeclineScreen(
+              getPrivateChatDataDecline: getSnapshot[index]),
+          //
+        ] else ...[
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(
+                left: 40,
               ),
-              color: navigationColor,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(
+                    16,
+                  ),
+                  bottomLeft: Radius.circular(
+                    16,
+                  ),
+                  topRight: Radius.circular(
+                    16,
+                  ),
+                ),
+                color: navigationColor,
+              ),
+              padding: const EdgeInsets.all(
+                16,
+              ),
+              child: textWithRegularStyleLeft(
+                //
+                getSnapshot[index]['message'].toString(),
+                //
+                16.0,
+                Colors.black,
+                'right',
+              ),
             ),
-            padding: const EdgeInsets.all(
-              16,
-            ),
-            child: textWithRegularStyleLeft(
-              //
-              getSnapshot[index]['message'].toString(),
-              //
-              16.0,
-              Colors.black,
-              'right',
-            ),
-            // Text(
-            //   //
-            //   'a',
-            //   // getSnapshot[index]['message'].toString(),
-            //   //
-            //   style: const TextStyle(
-            //     fontSize: 15,
-            //   ),
-            // ),
           ),
-        ),
+        ],
+
         //
         Align(
           alignment: Alignment.bottomRight,
@@ -594,6 +715,9 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
             'receiver_firebase_id': widget.strReceiverFirebaseId,
             'receiver_chat_user_id': widget.strReceiverChatId,
             'message': lastMessage,
+            'permission': [],
+            'permission_user_1': '',
+            'permission_user_2': '',
             'users': [
               roomId,
               reverseRoomId,
@@ -639,5 +763,95 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
         //
       },
     );
+  }
+
+  //
+  //
+  sendMessageForPermission(strLastMessageEntered, imagePermission) {
+    // print(cont_txt_send_message.text);
+
+    CollectionReference users = FirebaseFirestore.instance.collection(
+      '${strFirebaseMode}message/India/private_chats',
+    );
+
+    users
+        .add(
+          {
+            'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
+            'sender_chat_user_id': widget.strSenderChatId,
+            'sender_name': widget.strSenderName,
+            'receiver_name': widget.strReceiverName,
+            'receiver_firebase_id': widget.strReceiverFirebaseId,
+            'receiver_chat_user_id': widget.strReceiverChatId,
+            'message': strLastMessageEntered.toString(),
+            'time_stamp': DateTime.now().millisecondsSinceEpoch,
+            'room': 'private',
+            'type': imagePermission.toString(),
+
+            // save room id
+            'room_id': roomId.toString(),
+            'users': [
+              roomId,
+              reverseRoomId,
+            ]
+          },
+        )
+        .then(
+          (value) =>
+              //
+              funcCheckUsersIsAlreadyChatWithEachOther(),
+          //
+        )
+        .catchError(
+          (error) => print("Failed to add user: $error"),
+        );
+  }
+
+  //
+  //
+  funcGivePermissionAlertMessage(status, strMessage) {
+    //
+    if (status == '1') {
+      sendMessageForPermission(
+        'You can share image with me now.',
+        'image_permission_accept',
+      );
+    } else if (status == '2') {
+      sendMessageForPermission(
+        'You can not share image with me now.',
+        'image_permission_decline',
+      );
+    } else {
+      //
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: navigationColor,
+          content: textWithBoldStyle(
+            //
+            strMessage.toString(),
+            //
+            Colors.white,
+            14.0,
+          ),
+        ),
+      );
+    }
+  }
+
+  //
+  funcDummy() {
+    FirebaseFirestore.instance
+        .collection('${strFirebaseMode}dialog')
+        .doc('India')
+        .collection('details')
+        .orderBy('time_stamp', descending: true)
+        .where('users', arrayContainsAny: [
+          roomId,
+          reverseRoomId,
+        ])
+        .get()
+        .then((value) => {
+              print(value.docs),
+            });
   }
 }

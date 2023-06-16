@@ -40,10 +40,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     //
-    contEmail = TextEditingController();
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (kDebugMode) {
+        print('=====> signed in ');
+      }
+      contEmail =
+          TextEditingController(text: FirebaseAuth.instance.currentUser!.email);
+    } else {
+      if (kDebugMode) {
+        print('=====> signed out ');
+      }
+      contEmail = TextEditingController();
+    }
+
     contPassword = TextEditingController();
-    //
-    // funcTestEncrypt();
+
     super.initState();
   }
 
@@ -293,6 +304,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               //
+              const SizedBox(
+                height: 10,
+              ),
+              // CHECK EMAIL IS VERIFIED
+              (FirebaseAuth.instance.currentUser != null)
+                  ? (FirebaseAuth.instance.currentUser!.emailVerified == true)
+                      ? const SizedBox(
+                          height: 0,
+                        ) // email is verified
+                      : GestureDetector(
+                          onTap: () {
+                            if (kDebugMode) {
+                              print('=====> resend code button click <=====');
+                            }
+                            //
+                            funcResendCodeToVerifyEmailAddress();
+                            //
+                          },
+                          child: textWithRegularStyle(
+                            'resend code',
+                            Colors.black,
+                            14.0,
+                          ),
+                        )
+                  : const SizedBox(
+                      height: 0,
+                    ),
             ],
           ),
         ),
@@ -301,6 +339,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   //
+  funcResendCodeToVerifyEmailAddress() async {
+    //
+    showCustomDialog(context, 'sending...');
+    //
+
+    FirebaseAuth.instance.currentUser
+        ?.sendEmailVerification()
+        .then((values) => {
+              //
+              // print(values),
+              Navigator.pop(context),
+              //
+              popUpWithOutsideClick(
+                  context, 'Please check your E-mail address', 'Ok'),
+              //
+            });
+  }
+
   //
   signInViaFirebase() async {
     // dismiss keyboard
@@ -334,7 +390,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //
   funcCheckIsThisAccountVerifiedOrNot() async {
-    print(FirebaseAuth.instance.currentUser!.emailVerified);
+    if (kDebugMode) {
+      print(FirebaseAuth.instance.currentUser!.emailVerified);
+    }
     Navigator.pop(context);
     if (FirebaseAuth.instance.currentUser!.emailVerified == false) {
       popUpWithOutsideClick(
