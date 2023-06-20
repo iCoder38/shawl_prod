@@ -8,9 +8,14 @@ import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import '../../Utils/utils.dart';
 
 class PrivateChatSettingsScreen extends StatefulWidget {
-  const PrivateChatSettingsScreen({super.key, required this.strFirestoreId});
+  const PrivateChatSettingsScreen({
+    super.key,
+    required this.strFirestoreId,
+    required this.arrImagePermission,
+  });
 
   final String strFirestoreId;
+  final String arrImagePermission;
 
   @override
   State<PrivateChatSettingsScreen> createState() =>
@@ -19,6 +24,9 @@ class PrivateChatSettingsScreen extends StatefulWidget {
 
 class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
   //
+  var strBackUIrefresh = '0';
+  var strIsMyFirebaseIdAvailaibleInImagePermission = '0';
+  var arrImagePermissionParse = [];
   var strShowAlertText = '0';
   var switchImagePermission = false;
   //
@@ -26,13 +34,15 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
   void initState() {
     if (kDebugMode) {
       print('FIRESTORE ID =====> ${widget.strFirestoreId}');
+      print('IMAGE PERMISSION ARRAY =====> ${widget.arrImagePermission}');
     }
 
-    func();
+    funcShowImage();
+
     super.initState();
   }
 
-  func() {
+  funcShowImage() {
     (widget.strFirestoreId == '0')
         ? strShowAlertText = '0'
         : strShowAlertText = '1';
@@ -61,7 +71,7 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
               ),
               onTapUp: () {
                 //
-                Navigator.pop(context, 'pop_from_setting');
+                Navigator.pop(context, strBackUIrefresh);
               },
               onTapDown: () => HapticFeedback.vibrate(),
               child: const Row(
@@ -78,65 +88,123 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
         ),
         backgroundColor: navigationColor,
       ),
-      body: (strShowAlertText == '0')
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: textWithBoldStyle(
-                  'You have to chat first with this user to activate "Image Permission Alert".',
-                  Colors.black,
-                  14.0,
-                ),
-              ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('${strFirebaseMode}dialog')
+            .doc('India')
+            .collection('details')
+            .where(
+              'firestoreId',
+              isEqualTo: widget.strFirestoreId,
             )
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.image,
-                    ),
-                    title: textWithBoldStyle(
-                      'Image permission',
-                      Colors.black,
-                      16.0,
-                    ),
-                    subtitle: textWithRegularStyle(
-                      'Allow other to share image with you.',
-                      Colors.black,
-                      14.0,
-                    ),
-                    trailing: Switch(
-                      // This bool value toggles the switch.
-                      value: switchImagePermission,
-                      activeColor: Colors.greenAccent,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
-                        setState(() {
-                          switchImagePermission = value;
-                          funcImageSwitchPermission();
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                //
-                Container(
-                  margin: const EdgeInsets.only(
-                    left: 20.0,
-                  ),
-                  height: 0.4,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.grey,
-                ),
-              ],
+            .snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot2) {
+          if (snapshot2.hasData) {
+            // if (kDebugMode) {
+
+            var saveSnapshotValue2 = snapshot2.data!.docs;
+
+            //
+            arrImagePermissionParse = saveSnapshotValue2[0]['image_permission'];
+            if (kDebugMode) {
+              print('=====> IMAGE PERMISSION DATA <======');
+              // print(saveSnapshotValue2[0]['image_permission']);
+              print(arrImagePermissionParse);
+              // print('=====================================');
+            }
+            //
+            if (arrImagePermissionParse.isEmpty) {
+              switchImagePermission = false;
+            } else {
+              for (int i = 0; i < arrImagePermissionParse.length; i++) {
+                if (arrImagePermissionParse[i].toString() ==
+                    FirebaseAuth.instance.currentUser!.uid.toString()) {
+                  if (kDebugMode) {
+                    print('YES I AM AVAILAIBLE');
+                    print(switchImagePermission);
+                  }
+                  //
+                  switchImagePermission = true;
+                  //
+                }
+              }
+            }
+
+            //
+            return privateChatSettingUI(context);
+            //
+          } else if (snapshot2.hasError) {
+            if (kDebugMode) {
+              print(snapshot2.error);
+            }
+            return Center(
+              child: Text('Error: ${snapshot2.error}'),
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.pink,
             ),
+          );
+        },
+      ),
+      //
+      //
+      //
+    );
+  }
+
+  Column privateChatSettingUI(
+    BuildContext context,
+  ) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            leading: const Icon(
+              Icons.image,
+            ),
+            title: textWithBoldStyle(
+              'Image permission',
+              Colors.black,
+              16.0,
+            ),
+            subtitle: textWithRegularStyle(
+              'Allow other to share image with you.',
+              Colors.black,
+              14.0,
+            ),
+            trailing: Switch(
+              // This bool value toggles the switch.
+              value: switchImagePermission,
+              activeColor: Colors.greenAccent,
+              onChanged: (bool value) {
+                // This is called when the user toggles the switch.
+                setState(() {
+                  switchImagePermission = value;
+                });
+                funcImageSwitchPermission();
+              },
+            ),
+          ),
+        ),
+        //
+        Container(
+          margin: const EdgeInsets.only(
+            left: 20.0,
+          ),
+          height: 0.4,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.grey,
+        ),
+      ],
     );
   }
 
   //
-  funcUpdateImagepermissionData() {
+  funcAddFirebaseIdInImagePermissionData() {
     FirebaseFirestore.instance
         .collection('${strFirebaseMode}dialog')
         .doc('India')
@@ -148,18 +216,11 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
           [FirebaseAuth.instance.currentUser!.uid.toString()],
         )
       },
-    );
-  }
-
-  // image switch permission
-  funcImageSwitchPermission() {
-    if (kDebugMode) {
-      print(switchImagePermission);
-    }
+    ).then((value) => {
+              Navigator.pop(context),
+            });
     //
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    //
-    (switchImagePermission == true)
+    /*(switchImagePermission == true)
         ? ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: Colors.greenAccent,
@@ -183,7 +244,69 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
                 14.0,
               ),
             ),
-          );
+          );*/
+  }
+
+  //
+  funcRemoveFirebaseIdInImagePermissionData() {
+    FirebaseFirestore.instance
+        .collection('${strFirebaseMode}dialog')
+        .doc('India')
+        .collection('details')
+        .doc(widget.strFirestoreId.toString())
+        .update(
+      {
+        'image_permission': FieldValue.arrayRemove(
+          [FirebaseAuth.instance.currentUser!.uid.toString()],
+        )
+      },
+    ).then((value) => {
+              Navigator.pop(context),
+            });
+    //
+    /*(switchImagePermission == true)
+        ? ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.greenAccent,
+              content: textWithBoldStyle(
+                //
+                'Image permission : Granted'.toString(),
+                //
+                Colors.black,
+                14.0,
+              ),
+            ),
+          )
+        : ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.redAccent,
+              content: textWithBoldStyle(
+                //
+                'Image permission : Denied'.toString(),
+                //
+                Colors.white,
+                14.0,
+              ),
+            ),
+          );*/
+  }
+
+  // image switch permission
+  funcImageSwitchPermission() {
+    if (kDebugMode) {
+      print(switchImagePermission);
+    }
+    //
+    showCustomDialog(context, 'please wait...');
+    // setState(() {});
+    //
+    strBackUIrefresh = 'pop_from_setting';
+    // //
+    // ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    // //
+    (switchImagePermission == true)
+        ? funcAddFirebaseIdInImagePermissionData()
+        : funcRemoveFirebaseIdInImagePermissionData();
     //
   }
 }

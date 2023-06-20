@@ -146,17 +146,8 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
         ),
         backgroundColor: navigationColor,
         actions: [
-          IconButton(
-            onPressed: () {
-              //
-              pushToChatSettings(context);
-              //
-            },
-            icon: const Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-          ),
+          //
+          appBarActionSettingUI(),
           //
         ],
       ),
@@ -168,6 +159,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
+          //
         },
         child: Stack(
           children: [
@@ -261,13 +253,11 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
                   );
                 },
               ),
-
-              /**/
+              //
             ),
             //
             // ======> SEND MESSAGE UI <======
             // ===============================
-
             Align(
               alignment: Alignment.bottomCenter,
               child: sendMessageUI(),
@@ -278,6 +268,73 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
           ],
         ),
       ),
+    );
+  }
+
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>> appBarActionSettingUI() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('${strFirebaseMode}dialog')
+          .doc('India')
+          .collection('details')
+          .orderBy('time_stamp', descending: true)
+          .where('users', arrayContainsAny: [
+        roomId,
+        reverseRoomId,
+      ]).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot2) {
+        if (snapshot2.hasData) {
+          // if (kDebugMode) {
+
+          var saveSnapshotValue2 = snapshot2.data!.docs;
+
+          // GET DATA WHEN IMAGE PERMISSION IS NOT EMPTY
+          if (snapshot2.data!.docs.isNotEmpty) {
+            //
+            (snapshot2.data!.docs.isEmpty)
+                ? const SizedBox(
+                    height: 0,
+                  )
+                :
+                // save firestore id
+                strSaveDialogFirestoreId =
+                    '${saveSnapshotValue2[0]['firestoreId']}';
+            //
+          }
+          //
+          return (strSaveDialogFirestoreId == '')
+              ? const SizedBox(
+                  height: 0,
+                )
+              : IconButton(
+                  onPressed: () {
+                    //
+                    pushToChatSettings(
+                      context,
+                      saveSnapshotValue2[0]['image_permission'],
+                    );
+                    //
+                  },
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Colors.black,
+                  ),
+                );
+          //
+        } else if (snapshot2.hasError) {
+          if (kDebugMode) {
+            print(snapshot2.error);
+          }
+          return Center(
+            child: Text('Error: ${snapshot2.error}'),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.pink,
+          ),
+        );
+      },
     );
   }
 
@@ -591,23 +648,151 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
       // width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
-          (strImagePermissionStatus == '2')
-              ? IconButton(
-                  onPressed: () {
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('${strFirebaseMode}dialog')
+                .doc('India')
+                .collection('details')
+                .where(
+                  'firestoreId',
+                  isEqualTo: strSaveDialogFirestoreId,
+                )
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot2) {
+              if (snapshot2.hasData) {
+                // if (kDebugMode) {
+
+                var saveSnapshotValue2 = snapshot2.data!.docs;
+
+                if (saveSnapshotValue2.isEmpty) {
+                  if (kDebugMode) {
+                    print(saveSnapshotValue2);
+                    print('=======> DATA IS EMPTY, DO NOT SHOW SHARE <======');
+                  }
+                } else {
+                  //
+                  var arrImagePermissionParse = [];
+                  var switchImagePermission = false;
+                  //
+                  arrImagePermissionParse =
+                      saveSnapshotValue2[0]['image_permission'];
+                  if (kDebugMode) {
+                    // print('=======> SYSTEM TO SHARE IMAGE <======');
+                    // print(arrImagePermissionParse[0]);
+
+                    // print(arrImagePermissionParse.length);
+                    // print('=======================================');
+                  }
+
+                  if (arrImagePermissionParse.isEmpty) {
+                    const SizedBox(
+                      height: 0,
+                    );
+                  } else if (arrImagePermissionParse.length == 1) {
                     if (kDebugMode) {
-                      print('send');
+                      print('LOTS OF WORK TO DO');
+                      print(
+                          '=====> RECEIVER ID : ${saveSnapshotValue2[0]['receiver_firebase_id']}');
+                      print(
+                          '=====> SENDER ID : ${saveSnapshotValue2[0]['sender_firebase_id']}');
                     }
                     //
+                    for (int i = 0; i < arrImagePermissionParse.length; i++) {
+                      if (arrImagePermissionParse[i].toString() ==
+                          FirebaseAuth.instance.currentUser!.uid) {
+                        // show receiver's end share button
+                        if (kDebugMode) {
+                          print("RECEIVER'S END");
+                        }
+                      } else {
+                        // show sender's end share button
+                        if (kDebugMode) {
+                          print("SENDER'S END");
+                        }
+                        //
+                        return IconButton(
+                          onPressed: () {
+                            //
 
+                            //
+                          },
+                          icon: const Icon(
+                            Icons.share,
+                            color: Colors.black,
+                          ),
+                        );
+                        //
+                      }
+                    }
+                  } else {
+                    // 2
+                    return IconButton(
+                      onPressed: () {
+                        //
+
+                        //
+                      },
+                      icon: const Icon(
+                        Icons.share,
+                        color: Colors.black,
+                      ),
+                    );
+                  }
+
+                  /*for (int i = 0; i < arrImagePermissionParse.length; i++) {
+                  if (arrImagePermissionParse[i].toString() ==
+                      FirebaseAuth.instance.currentUser!.uid) {
+                    if (kDebugMode) {
+                      print('YES I AM AVAILAIBLE');
+                    }
                     //
-                  },
-                  icon: const Icon(
-                    Icons.share_sharp,
-                  ),
-                )
-              : const SizedBox(
+                    switchImagePermission = true;
+                    //
+                  } else {
+                    //
+                    switchImagePermission = false;
+                    //
+                  }
+                }*/
+                }
+
+                //
+                //
+                return const SizedBox(
                   height: 0,
+                );
+                /*(switchImagePermission == false)
+                    ? const SizedBox(
+                        height: 0,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          //
+
+                          //
+                        },
+                        icon: const Icon(
+                          Icons.share,
+                          color: Colors.black,
+                        ),
+                      );*/
+                //
+              } else if (snapshot2.hasError) {
+                if (kDebugMode) {
+                  print(snapshot2.error);
+                }
+                return Center(
+                  child: Text('Error: ${snapshot2.error}'),
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.pink,
                 ),
+              );
+            },
+          ),
           //
           Expanded(
             child: Padding(
@@ -827,9 +1012,6 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
 
   //
   funcSetUpMyAccountForAllAccess(firestoreId) {
-    // if (kDebugMode) {
-    //   print("==> DIALOG CREATED SUCCESSFULLY ==> $firestoreId");
-    // }
     //
     CollectionReference users = FirebaseFirestore.instance.collection(
       '${strFirebaseMode}dialog_permissions/India/details',
@@ -883,7 +1065,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
           print('value 1.0');
         }
         //
-        funcAddMyFirebaseIdToDialogImagePermission('1');
+        // funcAddMyFirebaseIdToDialogImagePermission('1');
         //
       },
     );
@@ -995,12 +1177,16 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
   }
 
   //
-  Future<void> pushToChatSettings(BuildContext context) async {
+  Future<void> pushToChatSettings(
+    BuildContext context,
+    imagePermissionData,
+  ) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PrivateChatSettingsScreen(
           strFirestoreId: strSaveDialogFirestoreId.toString(),
+          arrImagePermission: '',
         ),
       ),
     );
@@ -1011,29 +1197,14 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
 
     if (!mounted) return;
 
-    // team_task_loader = '0';
-    setState(() {
-      if (kDebugMode) {
-        print('====> YEAH REFRESH AFTER POP FROM SETTINGS');
-      }
-    });
-    //func_get_task_list_WB();
+    if (result != '0') {
+      setState(() {
+        if (kDebugMode) {
+          print('====> YEAH REFRESH AFTER POP FROM SETTINGS');
+        }
+      });
+    }
   }
 
   //
-  funcDummy() {
-    // FirebaseFirestore.instance
-    //     .collection('${strFirebaseMode}dialog')
-    //     .doc('India')
-    //     .collection('details')
-    //     .orderBy('time_stamp', descending: true)
-    //     .where('users', arrayContainsAny: [
-    //       roomId,
-    //       reverseRoomId,
-    //     ])
-    //     .get()
-    //     .then((value) => {
-    //           print(value.docs),
-    //         });
-  }
 }
