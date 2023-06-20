@@ -76,17 +76,17 @@ class _AllChatsListScreenState extends State<AllChatsListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            /*SafeArea(
+            const SafeArea(
               child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+                padding: EdgeInsets.only(left: 16, right: 16, top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const <Widget>[
-                    Text(
-                      "Conversations",
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
+                  children: <Widget>[
+                    // Text(
+                    //   "",
+                    //   style:
+                    //       TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    // ),
                     /*Container(
                       padding: const EdgeInsets.only(
                           left: 8, right: 8, top: 2, bottom: 2),
@@ -116,28 +116,28 @@ class _AllChatsListScreenState extends State<AllChatsListScreen> {
                   ],
                 ),
               ),
-            ),*/
+            ),
             //
-            /*Padding(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  hintStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey.shade600,
-                    size: 20,
-                  ),
-                  filled: false,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: const EdgeInsets.all(8),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.grey.shade100)),
-                ),
-              ),
-            ),*/
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            //   child: TextField(
+            //     decoration: InputDecoration(
+            //       hintText: "Search...",
+            //       hintStyle: TextStyle(color: Colors.grey.shade600),
+            //       prefixIcon: Icon(
+            //         Icons.search,
+            //         color: Colors.grey.shade600,
+            //         size: 20,
+            //       ),
+            //       filled: false,
+            //       fillColor: Colors.grey.shade100,
+            //       contentPadding: const EdgeInsets.all(8),
+            //       enabledBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(20),
+            //           borderSide: BorderSide(color: Colors.grey.shade100)),
+            //     ),
+            //   ),
+            // ),
             //
 
             StreamBuilder(
@@ -225,16 +225,31 @@ class _AllChatsListScreenState extends State<AllChatsListScreen> {
 
                           subtitle: SizedBox(
                             height: 40,
-                            child: textWithRegularStyleLeft(
-                              //
-                              // 'd',
+                            child: (saveSnapshotValue[i]['message']
+                                        .toString() ==
+                                    '')
+                                ? Row(
+                                    children: [
+                                      const Icon(Icons.image),
+                                      textWithRegularStyleLeft(
+                                        //
+                                        'image',
+                                        //
+                                        14.0,
+                                        Colors.black,
+                                        'left',
+                                      ),
+                                    ],
+                                  )
+                                : textWithRegularStyleLeft(
+                                    //
 
-                              saveSnapshotValue[i]['message'].toString(),
-                              //
-                              14.0,
-                              Colors.black,
-                              'left',
-                            ),
+                                    saveSnapshotValue[i]['message'].toString(),
+                                    //
+                                    14.0,
+                                    Colors.black,
+                                    'left',
+                                  ),
                           ),
 
                           // dense: true,

@@ -1,12 +1,20 @@
 // import 'package:anamak_two/classes/headers/custom/app_bar.dart';
 // import 'dart:js_interop';
 
+// ignore_for_file: non_constant_identifier_names
+
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:shawl_prod/classes/private_chat/private_chat_image_accept.dart/private_chat_image_accept.dart';
 import 'package:shawl_prod/classes/private_chat/private_chat_image_decline/private_chat_image_decline.dart';
@@ -46,6 +54,8 @@ class PrivateChatScreenTwo extends StatefulWidget {
 
 class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
   //
+  var str_image_processing = '0';
+  File? imageFile;
   bool? strAppBarPermissionStatus;
   bool light = false;
   //
@@ -54,7 +64,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
   //
   TextEditingController contTextSendMessage = TextEditingController();
   //
-  int _currentItem = 0;
+  // int _currentItem = 0;
   var strScrollOnlyOneTime = '1';
   //
   var roomId;
@@ -265,6 +275,39 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
             // ================================
             // ================================
             //
+            (str_image_processing == '1')
+                ? Container(
+                    // margin: const EdgeInsets.all(10.0),
+                    color: const Color.fromRGBO(
+                      246,
+                      248,
+                      253,
+                      1,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 48.0,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: navigationColor,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          textWithRegularStyle(
+                            'processing...',
+                            Colors.black,
+                            14.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox(
+                    height: 0,
+                  ),
           ],
         ),
       ),
@@ -508,39 +551,62 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
           ),
           //
         ] else ...[
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              margin: const EdgeInsets.only(
-                right: 40,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(
-                    16,
+          (getSnapshot[index]['attachment_path'].toString() != '')
+              ? Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    height: 220,
+                    width: 220,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: Image.network(
+                        getSnapshot[index]['attachment_path'].toString(),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  bottomRight: Radius.circular(
-                    16,
-                  ),
-                  topRight: Radius.circular(
-                    16,
+                )
+              : Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      right: 40,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(
+                          16,
+                        ),
+                        bottomRight: Radius.circular(
+                          16,
+                        ),
+                        topRight: Radius.circular(
+                          16,
+                        ),
+                      ),
+                      color: Colors.blue[200],
+                    ),
+                    padding: const EdgeInsets.all(
+                      16,
+                    ),
+                    child: textWithRegularStyleLeft(
+                      //
+                      getSnapshot[index]['message'].toString(),
+                      //
+                      14.0,
+                      Colors.black,
+                      'left',
+                    ),
                   ),
                 ),
-                color: Colors.blue[200],
-              ),
-              padding: const EdgeInsets.all(
-                16,
-              ),
-              child: textWithRegularStyleLeft(
-                //
-                getSnapshot[index]['message'].toString(),
-                //
-                14.0,
-                Colors.black,
-                'left',
-              ),
-            ),
-          ),
         ],
 
         //
@@ -580,39 +646,64 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
               getPrivateChatDataDecline: getSnapshot[index]),
           //
         ] else ...[
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 40,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(
-                    16,
+          (getSnapshot[index]['attachment_path'].toString() != '')
+              ? Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    height: 220,
+                    width: 220,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: Image.network(
+                        getSnapshot[index]['attachment_path'].toString(),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  bottomLeft: Radius.circular(
-                    16,
-                  ),
-                  topRight: Radius.circular(
-                    16,
+                )
+              :
+              //
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      left: 40,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(
+                          16,
+                        ),
+                        bottomLeft: Radius.circular(
+                          16,
+                        ),
+                        topRight: Radius.circular(
+                          16,
+                        ),
+                      ),
+                      color: navigationColor,
+                    ),
+                    padding: const EdgeInsets.all(
+                      16,
+                    ),
+                    child: textWithRegularStyleLeft(
+                      //
+                      getSnapshot[index]['message'].toString(),
+                      //
+                      16.0,
+                      Colors.black,
+                      'right',
+                    ),
                   ),
                 ),
-                color: navigationColor,
-              ),
-              padding: const EdgeInsets.all(
-                16,
-              ),
-              child: textWithRegularStyleLeft(
-                //
-                getSnapshot[index]['message'].toString(),
-                //
-                16.0,
-                Colors.black,
-                'right',
-              ),
-            ),
-          ),
         ],
 
         //
@@ -653,11 +744,10 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
                 .collection('${strFirebaseMode}dialog')
                 .doc('India')
                 .collection('details')
-                .where(
-                  'firestoreId',
-                  isEqualTo: strSaveDialogFirestoreId,
-                )
-                .snapshots(),
+                .where('users', arrayContainsAny: [
+              roomId,
+              reverseRoomId,
+            ]).snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot2) {
               if (snapshot2.hasData) {
@@ -711,7 +801,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
                           print("SENDER'S END");
                         }
                         //
-                        return IconButton(
+                        /*return IconButton(
                           onPressed: () {
                             //
 
@@ -721,7 +811,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
                             Icons.share,
                             color: Colors.black,
                           ),
-                        );
+                        );*/
                         //
                       }
                     }
@@ -730,7 +820,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
                     return IconButton(
                       onPressed: () {
                         //
-
+                        openGalleryOrCamera(context);
                         //
                       },
                       icon: const Icon(
@@ -852,6 +942,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
     users
         .add(
           {
+            'attachment_path': '',
             'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
             'sender_chat_user_id': widget.strSenderChatId,
             'sender_name': widget.strSenderName,
@@ -874,6 +965,7 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
         .then(
           (value) =>
               //
+
               funcCheckUsersIsAlreadyChatWithEachOther(),
           //
         )
@@ -887,6 +979,9 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
     if (kDebugMode) {
       print('bottle');
     }
+    setState(() {
+      str_image_processing = '0';
+    });
     FirebaseFirestore.instance
         .collection("${strFirebaseMode}dialog")
         .doc("India")
@@ -1083,13 +1178,14 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
     users
         .add(
           {
+            'attachment_path': '',
             'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
             'sender_chat_user_id': widget.strSenderChatId,
             'sender_name': widget.strSenderName,
             'receiver_name': widget.strReceiverName,
             'receiver_firebase_id': widget.strReceiverFirebaseId,
             'receiver_chat_user_id': widget.strReceiverChatId,
-            'message': strLastMessageEntered.toString(),
+            'message': ''.toString(),
             'time_stamp': DateTime.now().millisecondsSinceEpoch,
             'room': 'private',
             'type': imagePermission.toString(),
@@ -1206,5 +1302,169 @@ class _PrivateChatScreenTwoState extends State<PrivateChatScreenTwo> {
     }
   }
 
+  //
+  //
+  void openGalleryOrCamera(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Camera option'),
+        // message: const Text(''),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // ignore: deprecated_member_use
+              PickedFile? pickedFile = await ImagePicker().getImage(
+                source: ImageSource.camera,
+                maxWidth: 1800,
+                maxHeight: 1800,
+              );
+              if (pickedFile != null) {
+                setState(() {
+                  print('camera');
+                  imageFile = File(pickedFile.path);
+                });
+                //
+                str_image_processing = '1';
+                //
+                uploadImageToFirebase(context);
+                //
+
+                //
+              }
+            },
+            child: textWithRegularStyle(
+              'Open camera',
+              Colors.black,
+              14.0,
+            ),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // ignore: deprecated_member_use
+              PickedFile? pickedFile = await ImagePicker().getImage(
+                source: ImageSource.gallery,
+                maxWidth: 1800,
+                maxHeight: 1800,
+              );
+
+              if (pickedFile != null) {
+                setState(() {
+                  if (kDebugMode) {
+                    print('gallery');
+                  }
+                  imageFile = File(pickedFile.path);
+                });
+
+                str_image_processing = '1';
+                uploadImageToFirebase(context);
+              }
+            },
+            child: textWithRegularStyle(
+              'Open gallery',
+              Colors.black,
+              14.0,
+            ),
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: textWithRegularStyle(
+              'Dismiss',
+              Colors.redAccent,
+              16.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //
+  // upload image via firebase
+  Future uploadImageToFirebase(BuildContext context) async {
+    if (kDebugMode) {
+      print('dishu');
+    }
+    // String fileName = basename(imageFile_for_profile!.path);
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child(
+          'private_chat/${FirebaseAuth.instance.currentUser!.uid}',
+        )
+        .child(
+          generateRandomString(10),
+        );
+    await storageRef.putFile(imageFile!);
+    return await storageRef.getDownloadURL().then((value) => {
+          // print(
+          //   '======>$value',
+          // )
+          sendImageForPermission(value),
+        });
+  }
+
+  //
+  sendImageForPermission(
+    strAttachmentPath,
+  ) {
+    lastMessage = '';
+    // print(cont_txt_send_message.text);
+
+    CollectionReference users = FirebaseFirestore.instance.collection(
+      '${strFirebaseMode}message/India/private_chats',
+    );
+
+    users
+        .add(
+          {
+            'attachment_path': strAttachmentPath,
+            'sender_firebase_id': FirebaseAuth.instance.currentUser!.uid,
+            'sender_chat_user_id': widget.strSenderChatId,
+            'sender_name': widget.strSenderName,
+            'receiver_name': widget.strReceiverName,
+            'receiver_firebase_id': widget.strReceiverFirebaseId,
+            'receiver_chat_user_id': widget.strReceiverChatId,
+            'message': ''.toString(),
+            'time_stamp': DateTime.now().millisecondsSinceEpoch,
+            'room': 'private',
+            'type': 'image'.toString(),
+
+            // save room id
+            'room_id': roomId.toString(),
+            'users': [
+              roomId,
+              reverseRoomId,
+            ]
+          },
+        )
+        .then(
+          (value) =>
+              //
+              funcCheckUsersIsAlreadyChatWithEachOther(),
+          //
+        )
+        .catchError(
+          (error) => print("Failed to add user: $error"),
+        );
+  }
+
+  //
+  String generateRandomString(int lengthOfString) {
+    final random = Random();
+    const allChars =
+        'AaBbCcDdlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1EeFfGgHhIiJjKkL234567890';
+    // below statement will generate a random string of length using the characters
+    // and length provided to it
+    final randomString = List.generate(lengthOfString,
+        (index) => allChars[random.nextInt(allChars.length)]).join();
+    return randomString; // return the generated string
+  }
   //
 }

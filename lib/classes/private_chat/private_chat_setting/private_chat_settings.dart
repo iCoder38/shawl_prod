@@ -172,7 +172,7 @@ class _PrivateChatSettingsScreenState extends State<PrivateChatSettingsScreen> {
               16.0,
             ),
             subtitle: textWithRegularStyle(
-              'Allow other to share image with you.',
+              'Both of you must agree to share images with each other.',
               Colors.black,
               14.0,
             ),
