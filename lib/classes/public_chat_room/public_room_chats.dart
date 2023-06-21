@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:shawl_prod/classes/private_chat/private_chat_room_two.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -32,25 +33,27 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
   //
   // ScrollController controller = ScrollController();
   //
-  bool _needsScroll = false;
-  final ScrollController _scrollController = ScrollController();
+  // bool _needsScroll = false;
+  // final ScrollController _scrollController = ScrollController();
+
+  final ScrollController scrollController = ScrollController();
 
   //
   int _currentItem = 0;
-  var strScrollOnlyOneTime = '1';
+  var strScrollOnlyOneTime = '0';
   //
   @override
   void initState() {
     super.initState();
   }
 
-  _scrollToEnd() async {
-    if (_needsScroll) {
-      _needsScroll = false;
-      _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-    }
-  }
+  // _scrollToEnd() async {
+  //   if (_needsScroll) {
+  //     _needsScroll = false;
+  //     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+  //         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,33 +79,39 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+
+              // });
               if (snapshot.hasData) {
                 //
-                if (kDebugMode) {
-                  print('=======> dishant rajput 1.0');
-                }
-                if (strScrollOnlyOneTime == '1') {
-                  _needsScroll = true;
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((_) => _scrollToEnd());
-                }
-                //
 
-                if (kDebugMode) {
-                  print('=======> dishant rajput 2.0');
-                }
+                //
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  scrollController.jumpTo(
+                    scrollController.position.maxScrollExtent,
+                  );
+                });
+                // WidgetsBinding.instance.addPostFrameCallback((_) {
+                //   scrollController.jumpTo(
+                //     scrollController.position.maxScrollExtent,
+                //     // duration: const Duration(seconds: 1),
+                //     // curve: Curves.fastOutSlowIn,
+                //   );
+                // });
+                // if (scrollController.hasClients) {
+                //   scrollController
+                //       .jumpTo(scrollController.position.maxScrollExtent);
+                //   // setState(() {});
+                // }
+                //
 
                 var getSnapShopValue = snapshot.data!.docs.reversed.toList();
                 if (kDebugMode) {
                   // print(getSnapShopValue);
-
-                  if (kDebugMode) {
-                    print('=======> dishant rajput 3.0');
-                  }
                 }
                 return Stack(
                   children: [
-                    if (strScrollOnlyOneTime == '1') ...[
+                    /*if (strScrollOnlyOneTime == '1') ...[
                       const SizedBox(
                         height: 0,
                       )
@@ -111,21 +120,14 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                         alignment: Alignment.topCenter,
                         child: InkWell(
                           onTap: () {
-                            _needsScroll = true;
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => _scrollToEnd());
+                            // _needsScroll = true;
+                            // WidgetsBinding.instance
+                            // .addPostFrameCallback((_) => _scrollToEnd());
                           },
                           child: Container(
                             margin: const EdgeInsets.all(10.0),
                             width: 120,
                             height: 40,
-                            child: Center(
-                              child: textWithSemiBoldStyle(
-                                'New message',
-                                14.0,
-                                Colors.black,
-                              ),
-                            ),
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(
                                 255,
@@ -148,57 +150,40 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                                 ),
                               ],
                             ),
+                            child: Center(
+                              child: textWithSemiBoldStyle(
+                                'New message',
+                                14.0,
+                                Colors.black,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ],
+                    ],*/
                     ListView.builder(
                       // controller: controller,
-                      controller: _scrollController,
+                      controller: scrollController,
                       itemCount: getSnapShopValue.length,
                       shrinkWrap: true,
                       padding: const EdgeInsets.only(top: 10, bottom: 10),
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return VisibilityDetector(
-                          key: Key(index.toString()),
-                          onVisibilityChanged: (VisibilityInfo info) {
-                            if (info.visibleFraction == 1) {
-                              // setState(() {
-                              if (kDebugMode) {
-                                print(info);
-
-                                print('=======> dishant rajput');
-                              }
-
-                              _currentItem = index;
-
-                              if (_currentItem == getSnapShopValue.length - 1) {
-                                setState(() {
-                                  strScrollOnlyOneTime = '1';
-                                });
-                              } else {
-                                strScrollOnlyOneTime = '0';
-                              }
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                              left: 14,
-                              right: 14,
-                              //
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            child: (getSnapShopValue[index]
-                                            ['sender_chat_user_id']
-                                        .toString() ==
-                                    widget.strLoginSenderChatIdForPublic)
-                                ? rightSideUIOnlyForPublicChat(
-                                    getSnapShopValue, index)
-                                : leftSideUIOnlyForPublicChat(
-                                    getSnapShopValue, index),
+                        return Container(
+                          padding: const EdgeInsets.only(
+                            left: 14,
+                            right: 14,
+                            //
+                            top: 10,
+                            bottom: 10,
                           ),
+                          child: (getSnapShopValue[index]['sender_chat_user_id']
+                                      .toString() ==
+                                  widget.strLoginSenderChatIdForPublic)
+                              ? rightSideUIOnlyForPublicChat(
+                                  getSnapShopValue, index)
+                              : leftSideUIOnlyForPublicChat(
+                                  getSnapShopValue, index),
                         );
                       },
                     )
@@ -401,26 +386,6 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
   Column rightSideUIOnlyForPublicChat(getSnapshotData, int index) {
     return Column(
       children: [
-        //
-        /*Align(
-          alignment: Alignment.bottomRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              textWithSemiBoldStyle(
-                //
-                getSnapshotData[index]['sender_name'].toString(),
-                //
-                16.0,
-                Colors.black,
-                // 'right',
-              ),
-              //
-            ],
-            // 98061311374
-            // 8800631774
-          ),
-        ),*/
         //
         Align(
           alignment: Alignment.bottomRight,

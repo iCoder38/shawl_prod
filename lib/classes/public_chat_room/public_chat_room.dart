@@ -205,6 +205,7 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                autofocus: true,
                 controller: contTextSendMessage,
                 minLines: 1,
                 maxLines: 5,
