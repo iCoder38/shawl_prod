@@ -218,22 +218,6 @@ class _PublicChatRoomScreenState extends State<PublicChatRoomScreen> {
             ),
           ),
           //
-          // IconButton(
-          //   onPressed: () {
-          //     if (kDebugMode) {
-          //       print('send');
-          //     }
-          //     //
-
-          //     sendMessageViaFirebase(contTextSendMessage.text);
-          //     contTextSendMessage.text = '';
-          //     //
-          //   },
-          //   icon: const Icon(
-          //     Icons.send,
-          //   ),
-          // ),
-          //
           SizedBox(
             height: 50,
             width: 50,

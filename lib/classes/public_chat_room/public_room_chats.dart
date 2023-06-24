@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:shawl_prod/classes/private_chat/private_chat_room_two.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -39,6 +41,7 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
   final ScrollController scrollController = ScrollController();
 
   //
+  var scrollCount = 'scroll_to_bottom';
   int _currentItem = 0;
   var strScrollOnlyOneTime = '0';
   //
@@ -83,27 +86,23 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
 
               // });
               if (snapshot.hasData) {
-                //
-
-                //
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  scrollController.jumpTo(
-                    scrollController.position.maxScrollExtent,
-                  );
-                });
-                // WidgetsBinding.instance.addPostFrameCallback((_) {
-                //   scrollController.jumpTo(
-                //     scrollController.position.maxScrollExtent,
-                //     // duration: const Duration(seconds: 1),
-                //     // curve: Curves.fastOutSlowIn,
-                //   );
-                // });
-                // if (scrollController.hasClients) {
-                //   scrollController
-                //       .jumpTo(scrollController.position.maxScrollExtent);
-                //   // setState(() {});
-                // }
-                //
+                // SCROLL TO BOTTOM WHEN MESSAGE LOAD OR NEW MESSAGE APPEAR
+                if (scrollCount == '0') {
+                  scrollCount = '1';
+                  // SchedulerBinding.instance.addPostFrameCallback((_) {
+                  //   scrollController.jumpTo(
+                  //     scrollController.position.maxScrollExtent + 500,
+                  //   );
+                  // });
+                } else if (scrollCount == 'do_not_scroll') {
+                  if (kDebugMode) {
+                    print('NO SCROLL AFTER NEW MESSAGE APPEAR');
+                  }
+                } else if (scrollCount == 'scroll_to_bottom') {
+                  //
+                  funcScrollToBottom();
+                  //
+                }
 
                 var getSnapShopValue = snapshot.data!.docs.reversed.toList();
                 if (kDebugMode) {
@@ -111,82 +110,119 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
                 }
                 return Stack(
                   children: [
-                    /*if (strScrollOnlyOneTime == '1') ...[
-                      const SizedBox(
-                        height: 0,
-                      )
-                    ] else ...[
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: InkWell(
-                          onTap: () {
-                            // _needsScroll = true;
-                            // WidgetsBinding.instance
-                            // .addPostFrameCallback((_) => _scrollToEnd());
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.all(10.0),
-                            width: 120,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(
-                                255,
-                                250,
-                                247,
-                                247,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                14.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(
-                                    0,
-                                    3,
-                                  ), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: textWithSemiBoldStyle(
-                                'New message',
-                                14.0,
-                                Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],*/
-                    ListView.builder(
-                      // controller: controller,
-                      controller: scrollController,
-                      itemCount: getSnapShopValue.length,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.only(
-                            left: 14,
-                            right: 14,
-                            //
-                            top: 10,
-                            bottom: 10,
-                          ),
-                          child: (getSnapShopValue[index]['sender_chat_user_id']
-                                      .toString() ==
-                                  widget.strLoginSenderChatIdForPublic)
-                              ? rightSideUIOnlyForPublicChat(
-                                  getSnapShopValue, index)
-                              : leftSideUIOnlyForPublicChat(
-                                  getSnapShopValue, index),
-                        );
+                    NotificationListener(
+                      onNotification: (t) {
+                        if (t is ScrollEndNotification) {
+                          // print(scrollController.position.pixels);
+                          final metrics = t.metrics;
+                          // print(metrics.pixels);
+                          if (metrics.atEdge) {
+                            bool isTop = metrics.pixels == 0;
+                            if (isTop) {
+                              if (kDebugMode) {
+                                print('At the top');
+                                print(metrics.pixels);
+                              }
+                              //
+                              scrollCount = 'do_not_scroll';
+                              //
+                            } else {
+                              if (kDebugMode) {
+                                print('At the bottom');
+                              }
+                              scrollCount = 'scroll_to_bottom';
+                              setState(() {
+                                if (kDebugMode) {
+                                  print('========>refresh');
+                                }
+                              });
+                            }
+                          }
+
+                          //
+                        } else if (t is ScrollStartNotification) {
+                          if (kDebugMode) {
+                            print('update 2.0');
+                          }
+                          //
+                          scrollCount = 'do_not_scroll';
+                          //
+                        }
+
+                        return true;
                       },
-                    )
+                      // onNotification: (scrollNotification) {
+
+                      child: ListView.builder(
+                        // controller: controller,
+                        controller: scrollController,
+                        itemCount: getSnapShopValue.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.only(
+                              left: 14,
+                              right: 14,
+                              //
+                              top: 10,
+                              bottom: 10,
+                            ),
+                            child: (getSnapShopValue[index]
+                                            ['sender_chat_user_id']
+                                        .toString() ==
+                                    widget.strLoginSenderChatIdForPublic)
+                                ? rightSideUIOnlyForPublicChat(
+                                    getSnapShopValue, index)
+                                : leftSideUIOnlyForPublicChat(
+                                    getSnapShopValue, index),
+                          );
+                        },
+                      ),
+                    ),
+                    //
+                    (scrollCount != 'do_not_scroll')
+                        ? const SizedBox(
+                            height: 0,
+                          )
+                        : Align(
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              height: 40,
+                              width: 180,
+                              child: NeoPopButton(
+                                color: const Color.fromRGBO(
+                                  190,
+                                  164,
+                                  136,
+                                  1,
+                                ),
+                                // onTapUp: () => HapticFeedback.vibrate(),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                onTapUp: () {
+                                  //
+                                  funcScrollToBottom();
+                                  //
+                                },
+                                onTapDown: () => HapticFeedback.vibrate(),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    textWithBoldStyle(
+                                      'New message',
+                                      Colors.white,
+                                      14.0,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                    //
                   ],
                 );
               } else if (snapshot.hasError) {
@@ -444,5 +480,13 @@ class _PublicChatRoomChatsState extends State<PublicChatRoomChats> {
       ],
     );
   }
-  //
+
+  // SCROLL TO BOTTOM
+  funcScrollToBottom() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(
+        scrollController.position.maxScrollExtent,
+      );
+    });
+  }
 }
